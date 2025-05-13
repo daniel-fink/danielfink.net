@@ -1,39 +1,44 @@
-// src/contentRenderer.ts
-import type {ContentRecord, ContentItem} from './types';
+import './content.css';
+import * as types from "./types";
 
-// If you need image URLs:
-const imageData = import.meta.glob('./content/images/*', {eager: true, as: 'url'}) as Record<string, string>;
+const contentRecords: types.ContentRecord[] = Object
+    .values(import.meta.glob('../content/*.json', {eager: true}) as Record<string, { default: types.ContentRecord }>)
+    .map(m => m.default)
+    .sort(({index: a = 0}, {index: b = 0}) => a - b);
 
-export function renderContent(records: ContentRecord[]): HTMLElement {
+export function initialize(): HTMLDivElement {
+    // Root container
     const container = document.createElement('div');
-    container.className = 'content';
+    container.className = 'content-container';
 
-    records.forEach(record => {
-        const section = document.createElement('section');
-        // title, desc, content loop...
-        record.content.forEach((item: ContentItem) => {
-            // switch on item.type → p, img, caption, etc.
-        });
-        container.appendChild(section);
+    const header = document.createElement('div');
+    header.className = 'menu-header';
+    container.appendChild(header);
+
+    // Content items
+    const content = document.createElement('div');
+    content.className = 'content-items';
+    // Render each contentRecord
+    contentRecords.forEach(record => {
+        const story = renderRecord(record);
+        content.appendChild(story);
     });
+    container.appendChild(content);
+
 
     return container;
 }
 
-function renderItem(item: ContentItem): HTMLElement {
+
+function renderItem(item: types.ContentItem): HTMLElement {
     switch (item.type) {
         case 'body':
             const p: HTMLParagraphElement = document.createElement('p');
             p.textContent = item.value;
             return p;
         case 'image': {
-            const key = `./content/images/${item.value}`;
-            const imgUrl = imageData[key];
-            if (!imgUrl) {
-                console.warn(`Image not found for key: ${key}`);
-            }
-            const img: HTMLImageElement = document.createElement('img');
-            img.src = imgUrl;
+            const img = new Image();
+            img.src = new URL(`../content/images/${item.value}`, import.meta.url).href;
             return img;
         }
         case 'caption':
@@ -46,7 +51,7 @@ function renderItem(item: ContentItem): HTMLElement {
     }
 }
 
-export function renderRecord(record: ContentRecord): HTMLElement {
+function renderRecord(record: types.ContentRecord): HTMLElement {
     const story = document.createElement('story');
 
     // Title
