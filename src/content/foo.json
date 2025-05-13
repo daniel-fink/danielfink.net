@@ -1,0 +1,16 @@
+{
+  "title": "Foo",
+  "index": 1,
+  "date": "2024-10-01",
+  "description": "Foo is a placeholder document that serves as an example for testing purposes.",
+  "content": [
+    {
+      "type": "body",
+      "value": "Blah, blah, blah. This is a placeholder document that serves as an example for testing purposes. It contains various types of content to demonstrate the structure and format of the final document."
+    },
+    {
+      "type": "body",
+      "value": "More placeholder text. This section contains additional information about the placeholder document. It is meant to provide context and background information for the reader."
+    }
+  ]
+}

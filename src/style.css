@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+}
+
+#app {
+    display: flex;
+    align-items: flex-start;
+    width: 100vw;
+    height: 100vh;
+    background: #f1f1f1;
+    font-size: .8rem;
+}
+
+.columns {
+    display: flex;
+    gap: 3rem;
+    width: 100%;
+    height: 100%;
+}
+
+.left,
+.right {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.left {
+    position: relative;
+}
+
+.left-header {
+    position: absolute;
+    top: clamp(0px, 25vh, 9rem);
+    height: 1.75rem;
+    width: 100%;
+}
+
+.left-header-text {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #000;
+    text-align: right;
+    font-weight: 800;
+
+}
+
+/* Hamburger toggle */
+.hamburger {
+    display: none;
+}
+
+.left-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -.25px;
+    width: 100%;
+    height: 0.5px;
+    background: #000;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.left .menu {
+    position: absolute;
+    top: calc(clamp(0px, 25vh, 9rem) + 2rem);
+    right: 0;
+    width: 18rem;
+    text-align: right;
+}
+
+/* Menu items */
+.left .menu > div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 2rem;
+    border-bottom: 0.25px solid #000;
+    /*font-size: .8rem;*/
+    font-weight: 400;
+    color: #000;
+    text-align: right;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+
+.content {
+    width: 18rem;
+    flex-shrink: 0;
+}
+
+.content img {
+    max-width: 18rem;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0.5rem 0;
+}
+
+
+/* Responsive: stack left above right on narrow screens */
+@media (max-width: 42rem) {
+    .columns {
+        flex-direction: column;
+    }
+
+    .left-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 1.25rem;
+        width: 100%;
+        height: 1.75rem;
+    }
+
+    .hamburger {
+        display: block;
+        position: absolute;
+        left: 1.5rem;
+        transform: translateY(-50%);
+        font-size: 1.25rem;
+        cursor: pointer;
+        z-index: 1001;
+
+    }
+
+    .left-header-text {
+        position: static;
+        transform: translateY(-55%);
+        text-align: center;
+    }
+
+    .left .menu {
+        width: 100%;
+    }
+
+    .left .menu > div {
+        justify-content: center;
+        text-align: center;
+    }
+
+
+    .left .menu {
+        display: none;
+    }
+
+    .left .menu.open {
+        display: block;
+        position: fixed;
+        top: calc(3rem + 1px);
+        left: 0;
+        width: 100%;
+        /*background: #f9f9f9;*/
+        z-index: 1000;
+    }
+}
+
+/* Hide header text when viewport is extremely narrow */
+@media (max-width: 9rem) {
+    .hamburger {
+        position: static;
+    }
+
+    .left-header-text {
+        display: none;
+    }
+}
