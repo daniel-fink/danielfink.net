@@ -43,3 +43,13 @@
     display: block;
     margin: 0.5rem 0;
 }
+
+@media (max-width: 36rem) {
+    .content-container {
+        width: 100%;
+    }
+
+    .content-items {
+        width: 100%;
+    }
+}

@@ -58,7 +58,7 @@
 }
 
 /* Responsive: stack left above right on narrow screens */
-@media (max-width: 42rem) {
+@media (max-width: 36rem) {
     .menu-container .menu-header {
         display: flex;
         align-items: center;
