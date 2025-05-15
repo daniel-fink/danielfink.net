@@ -1,5 +1,7 @@
 import './content.css';
 import * as types from "./types";
+import Muuri from 'muuri'
+
 
 const contentRecords: types.ContentRecord[] = Object
     .values(import.meta.glob('../content/*.json', {eager: true}) as Record<string, { default: types.ContentRecord }>)
@@ -20,11 +22,18 @@ export function initialize(): HTMLDivElement {
     content.className = 'content-items';
     // Render each contentRecord
     contentRecords.forEach(record => {
+        const storyContainer = document.createElement('div');
+        storyContainer.className = 'story-container';
         const story = renderRecord(record);
-        content.appendChild(story);
+        storyContainer.appendChild(story);
+        content.appendChild(storyContainer);
     });
     container.appendChild(content);
 
+    // Defer Muuri init until next frame (after container is in DOM)
+    requestAnimationFrame(() => {
+        new Muuri(content, {layout: {rounding: false}});
+    });
 
     return container;
 }
