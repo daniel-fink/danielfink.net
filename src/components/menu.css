@@ -17,7 +17,8 @@
     right: 0;
     color: #000;
     text-align: right;
-    font-weight: 800;
+    font-size: .85rem;
+    font-weight: 700;
 }
 
 .menu-header::after {
@@ -28,7 +29,7 @@
     width: 100%;
     height: 0.5px;
     background: #000;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.333333);
 }
 
 /* Hamburger toggle */
@@ -42,23 +43,48 @@
     right: 0;
     width: 18rem;
     text-align: right;
+    /*font-weight: 600;*/
 }
 
-.menu-container .menu-items > div {
+.menu-item {
+    display: flex;
+    flex-direction: column; /* stack label + submenu */
+    align-items: flex-end; /* keep label & items right-aligned */
+    text-align: right;
+    /*height: 2rem;*/
+    border-bottom: 0.25px solid #000;
+    padding: 0.5rem 0rem; /* replaces fixed height */
+    font-size: .825rem;
+    font-weight: 500;
+    cursor: pointer;
+
+}
+
+
+.menu-item .sub-menu {
+    display: block; /* always visible, in flow */
+    width: 100%;
+    margin-top: .25rem; /* indent submenu items */
+}
+
+.menu-item .sub-menu-item {
+    height: 2rem;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    height: 2rem;
-    border-bottom: 0.25px solid #000;
-    font-weight: 400;
-    color: #000;
-    text-align: right;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    font-weight: 300;
+    /*padding: 1 0rem;*/
+    /*border-bottom: 0.25px solid #000;*/
 }
+
 
 /* Responsive: stack left above right on narrow screens */
 @media (max-width: 36rem) {
+    .menu-container {
+        flex: 0 0 auto; /* size to its content */
+        height: auto;
+    }
+
     .menu-container .menu-header {
         display: flex;
         align-items: center;
@@ -90,6 +116,11 @@
         width: 100%;
     }
 
+    .menu-item {
+        text-align: center;
+        align-items: center;
+    }
+
     .menu-container .menu-items.open {
         display: block;
         position: fixed;
@@ -99,9 +130,8 @@
         z-index: 1000;
     }
 
-    .menu-container .menu-items > div {
+    .menu-item .sub-menu-item {
         justify-content: center;
-        text-align: center;
     }
 }
 

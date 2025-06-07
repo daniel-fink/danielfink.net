@@ -1,0 +1,40 @@
+{
+  "title": "Computational Network Design",
+  "index": 3,
+  "date": "2016-07-11",
+  "description": "Under the leadership of UCL Smart Geometry Lab Prof. Niloy Mitra and lead author Chi-Han Peng, this paper presents a computational method for generating network layouts—such as streets or floorplans—based solely on high-level functional specifications like density, travel time, and traffic type. Using an integer programming approach, the method guarantees valid networks that meet all constraints and perform well on defined objectives.",
+  "blocks": [
+    {
+      "type": "body",
+      "value": "Designing networks (especially in multi-disciplinary domains like street traffic or office floorplans) is typically a manual and iterative process involving planners and engineers. Accurately predicting network performance through visual inspection alone is inherently challenging, and existing tools predominantly rely on geometric precedents or are limited to performance analysis rather than generative synthesis."
+    },
+    {
+      "type": "body",
+      "value": "#### Computational Network Design from Functional Specifications\n Published in: ACM Transactions on Graphics, 11 July 2016"
+    },
+    {
+      "type": "image",
+      "value": "network01.png"
+    },
+    {
+      "type": "body",
+      "value": "We propose user-definition of functional specifications, or descriptions intended network behaviour. These include: \n- Density: how tightly connected the network should be.\n- Travel time vs. length: balance between total edge length and access.\n- Traffic type: boundary-to-boundary, interior-to-boundary, or interior-to-interior.\n- Sink locations: destinations placements (e.g., shops, exits).\n- Local features: preference for or avoidance of T-junctions, dead-ends, etc.\n- User specifications: forced inclusions (e.g., direct connections), or exclusions (e.g., obstacles)."
+    },
+    {
+      "type": "body",
+      "value": "The functional requirements are encoded into an integer programming formulation where variables represent the presence or absence of edges between network nodes; constraints enforce network validity, and the objective function encodes performance goals (e.g., minimize travel time, total length, maximize coverage)."
+    },
+    {
+      "type": "image",
+      "value": "network02.png"
+    },
+    {
+      "type": "body",
+      "value": "The approach and methodology was tested in a vehicular traffic scenario, using the [SUMO](https://eclipse.dev/sumo/) simulator. We benchmarked our synthesized networks against SUMO simulations across six scenarios, finding consistent results with only a near-constant underestimation of travel times. This confirms that functional specifications alone can effectively achieve design goals, demonstrating the robustness and practical utility of the approach."
+    },
+    {
+      "type": "body",
+      "value": "Access the paper here: [Computational network design from functional specifications](https://doi.org/10.1145/2897824.2925935)"
+    }
+  ]
+}

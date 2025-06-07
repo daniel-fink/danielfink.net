@@ -1,0 +1,28 @@
+{
+  "title": "Complex Urbanities",
+  "index": 1,
+  "date": "2018-09-01",
+  "description": "The Byera Hadley Travelling Scholarship is Australia’s most prestigious architectural bequest. It provides funding of up to $30,000 for students of architecture to undertake travel-based research that contributes to the advancement of the discipline. 'Complex Urbanities: Digital Techniques in Urban Design' is a result of my scholarship, exploring the evolving role of computational design in urban design &  development.",
+  "blocks": [
+    {
+      "type": "body",
+      "value": "The report investigates the transformative potential of computational approaches in urban design through four in-depth interviews with leaders in architecture, computer science, and practice. The conversations explore how digital methods can reshape urbanism, from grassroots development models to top-down planning systems, with particular emphasis on democratization, complexity, and cross-disciplinarity."
+    },
+    {
+      "type": "image",
+      "value": "bh01.png"
+    },
+    {
+      "type": "body",
+      "value": "- Dan Hill (urbanist & technologist) argues that designers must move beyond buildings to engage with socio-technical systems and platforms, using technology to create distributed, civic-oriented infrastructures and redefine value in urbanism.\n- José Duarte & José Beirão (academics in architecture) see computational grammars as tools to balance complexity and customization in urban design, advocating for systems that embed social values and align with planning practice.\n- Peter Wonka (academic in computer science) highlights the technical difficulties of urban computation and stresses the need for human-guided tools that support exploration over automation, requiring close collaboration between designers and engineers.\n- Christian Derix (architect & urban designer) champions computation as a means to support civic outcomes and resist poor planning, cautioning against techno-solutionism and calling for more values-driven, multi-scalar approaches."
+    },
+    {
+      "type": "body",
+      "value": "The interviews reveal shared views on how digital technologies are reshaping urbanism; not only in form, but in governance, experience, and decision-making. There is a clear shift from designing objects to designing systems, with computation enabling both generation and evaluation. Designers are increasingly seen as architects of platforms and processes, not just spaces. While digital tools can democratize design, they can also centralize control, making the intent and structure of these tools critical. Computation is thus positioned not just as a technical aid, but as a mediator of values and social outcomes."
+    },
+    {
+      "type": "body",
+      "value": "Download the report from the NSW Architects' Registration Board resource library: [Complex Urbanities: Digital Techniques in Urban Design](https://www.architects.nsw.gov.au/resource-library/research-reports/report/15?search=&report_tags=&locations=)"
+    }
+  ]
+}

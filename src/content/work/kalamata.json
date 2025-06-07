@@ -1,0 +1,40 @@
+{
+  "title": "Floor-shape Constraint Solving",
+  "index": 5,
+  "date": null,
+  "description": "A toolset that reshapes building floorplates while maintaining overall area and design intent. Developed in response to difficulties in complying with both planning constraints and design intent during early-stage urban form development.",
+  "blocks": [
+    {
+      "type": "body",
+      "value": "Automated design tools often generate geometry through procedural algorithms, but adjusting these algorithms' input parameters to meet global performance constraints (such as total floor area) can be challenging. When such constraints aren’t satisfied, it’s rarely obvious which parameters need modification. As a result, designers must rely on trial-and-error iterations, which can be time-consuming and often misaligned with the original design intent. Reverse-engineering procedural steps to identify how to make those adjustments can be ambiguous and complex.<br><br>To address this, I developed a computational toolset for reshaping building floorplates while preserving global properties, like total area. It allows designers to directly manipulate vertex positions and edge lengths, while underlying geometric rules maintain area consistency. This approach blends precise constraint solving with intuitive user control, enabling flexible yet compliant design exploration aligned with project goals."
+    },
+    {
+      "type": "video",
+      "value": "kalamata01.mp4"
+    },
+    {
+      "type": "body",
+      "value": "Codenamed 'Kalamata', the toolset was implemented in Grasshopper, and consists of a series of customised components that specify goals/constraints that extend the [Kangaroo Constraint Solver](http://kangaroo3d.com/). As opposed to conventional decomposition, symbolic, or constraint propagation techniques, Kangaroo makes use of an axial force-based equilibrium solver, which means it is very easy to define custom goals, however it comes at the expense of accuracy and robustness. Future work can utilize more robust solutions such as the [SolveSpace library](https://solvespace.com/library.pl)."
+    },
+    {
+      "type": "image",
+      "value": "kalamata02.png"
+    },
+    {
+      "type": "body",
+      "value": "Fundamentally, the components enable specifying an area goal for a shape, while retaining the directionality of the shape's edges. This means that the user can specify a target area, and then drag the vertices of the shape to adjust its form, while the area and overall shape topology remains constant."
+    },
+    {
+      "type": "image",
+      "value": "kalamata03.png"
+    },
+    {
+      "type": "body",
+      "value": "In addition, the edge lengths of a shape can be clamped between minimum and maximum lengths, multiple shapes can be inhibited from colliding, and internal 'voids' can be inhibited from overlapped external edges. This facilitates the kinds of typical geometric moves in massing design and floorplate planning."
+    },
+    {
+      "type": "image",
+      "value": "kalamata04.png"
+    }
+  ]
+}

@@ -1,11 +1,12 @@
-export interface ContentItem {
-    type: 'body' | 'image' | 'caption';
+export interface Block {
+    type: 'date' | 'description' | 'body' | 'image' | 'caption' | 'subtitle' | 'video';
     value: string;
 }
 
-export interface ContentRecord {
+export interface Story {
     title?: string;
+    date?: string;
     description?: string;
     index?: number;
-    content: ContentItem[];
+    blocks: Block[];
 }

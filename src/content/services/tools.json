@@ -1,0 +1,30 @@
+{
+  "title": "Digital Tools & Workflows",
+  "index": 1,
+  "blocks": [
+    {
+      "type": "subtitle",
+      "value": "Asset-level"
+    },
+    {
+      "type": "body",
+      "value": "- Assisted & Automated Scenario-generation for Massing, Use-mix, Blocking & Stacking\n- Integrated Design, Engineering & Financial Analysis per Scenario, including:\n  - Space- & Part-level Micro-Proformas\n  - Views & Daylighting Analysis and Revenue Premia\n  - Solar Analysis and Operations Costs\n- Flexibility Strategies (Use, Phasing Scenarios) and Upside Risk Opportunities\n #### Example Projects:\n - [Rangekeeper](#Rangekeeper): An open-source code library for financial modelling of real estate assets & development.\n - [Lendlease Podium for Development (Podium.io)](https://podium.io): Integrated financial modelling workspace for real estate development software platform\n- [The value of daylight in office spaces](https://www.sciencedirect.com/science/article/abs/pii/S0360132319307152): Econometric analysis identifying rent premia from good daylight, published in Building and Environment"
+    },
+    {
+      "type": "subtitle",
+      "value": "Neighborhood-level"
+    },
+    {
+      "type": "body",
+      "value": "- Urban Design & Masterplanning services\n- Automated Financial Proforma Generation per-Parcel\n- Regulatory Constraint Modelling per-Parcel\n- Automated Highest & Best Use Analysis per-Parcel\n- Solar Overshadowing & Daylighting Modelling per-Scenario\n #### Example Projects:\n - [Central to Eveleigh Urban Transformation Strategy](https://www.centraltoeveleigh.nsw.gov.au/uts/uts/), Sydney. With Grimshaw Architects (Design Lead) \n - Maribyrnong Defense Site, Melbourne. With Grimshaw Architects (Design Lead)\n - [City of Boston Housing Development Interactive Educational Toolkit](https://placeful.github.io/housingilab/): A webapp for user-directed learning about property development outcomes and urban planning rules\n - [MIT Media Lab CityScope Financial Modelling Module](https://realestateinnovationlab.mit.edu/research_article/automated-financial-modeling-for-urban-design/): Precinct-level economic outcomes analysis for immersive workshops"
+    },
+    {
+      "type": "subtitle",
+      "value": "Region-level"
+    },
+    {
+      "type": "body",
+      "value": "- Property Market Pricing Dynamics Simulation\n- Automated & Assisted Site Prospecting\n #### Example Projects:\n - Greater Sydney Missing-Middle Site-finder (Confidential Client)\n - Black Oak Ventures Prospector: An integrated CRM and geospatial analysis application for townhome development in California"
+    }
+  ]
+}

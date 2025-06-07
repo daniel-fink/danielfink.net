@@ -1,0 +1,60 @@
+{
+  "title": "Pricing Daylight and Views",
+  "index": 2,
+  "date": "2021-11-01",
+  "description": "Alongside MIT collaborators Dr. Irmak Turan, Dr. Andrea Chegut, and Dr. Christoph Reinhardt, statistically significant evidence was identified for the economic value of good daylighting and views for office spaces. In addition, we developed new metrics to measure the view potential for office spaces and demonstrated their productivity.",
+  "blocks": [
+    {
+      "type": "body",
+      "value": "Access to daylight and views is not just a matter of architectural aesthetics; it directly impacts human well-being, workplace productivity, and economic value. In two companion studies, we combined environmental simulation with econometric modeling to quantify how much tenants in dense urban office markets are willing to pay for these spatial qualities."
+    },
+    {
+      "type": "body",
+      "value": "#### The value of daylight in office spaces\n Published in Building and Environment, 25 October 2019"
+    },
+    {
+      "type": "body",
+      "value": "This paper pairs spatial daylight simulation with a hedonic pricing model to empirically quantify how daylight access affects commercial office rents in Manhattan. It finds that office spaces with high daylight performance command 5–6% higher rents than similar spaces with low daylight. This premium is independent of sustainability certifications or building height, underscoring daylight as a financially material design factor. The study shows that only 26% of office floors meet best-practice daylight levels, and argues that daylight should be a key consideration in investment and urban policy."
+    },
+    {
+      "type": "image",
+      "value": "daylight_views04.png"
+    },
+    {
+      "type": "body",
+      "value": "Our methodology was two-fold: first, we identified 5,154 floors in commercial office buildings in Manhattan, and created a an individual 3D model for each building those floors were in. We simulated the daylight distribution in each floorspace using climate-based backwards ray-tracing and measured the spatial daylight autonomy (sDA). We then input those results into an hedonic pricing model (multiple regression), that identifies the impact of each space's characteristics on its rent price. By controlling for exogenous building characteristics, lease contract terms, location fixed effects, and time fixed effects, we were able to isolate the impact of daylight on rent prices."
+    },
+    {
+      "type": "image",
+      "value": "daylight_views10.png"
+    },
+    {
+      "type": "body",
+      "value": "Access the paper here: [The value of daylight in office spaces](https://doi.org/10.1016/j.buildenv.2019.106503)<br><br>"
+    },
+    {
+      "type": "body",
+      "value": "#### Development of view potential metrics and the financial impact of views on office rents\n Published in Landscape and Urban Planning, 9 July 2021"
+    },
+    {
+      "type": "image",
+      "value": "daylight_views01.png"
+    },
+    {
+      "type": "body",
+      "value": "This paper introduces two quantitative metrics: Minimum View Potential (MVP); and Spatial View Access (sVA), to evaluate access to outdoor views in open-plan office spaces using 3D geometric models. Applied across 5,154 Manhattan offices, the analysis found that higher view access correlates with a 6% rent premium, independent of daylight quality. The findings establish not only a method for measuring visual connectivity in architectural spaces but also provide evidence for the economic value of views, informing design, development, and planning decisions."
+    },
+    {
+      "type": "image",
+      "value": "daylight_views12.png"
+    },
+    {
+      "type": "body",
+      "value": "Similarly to our previous paper, we simulate the potential view access to an office floor by backwards ray-tracing, and inputting those results into an hedonic pricing model, while controlling for all factors specified in our paper on daylighting. Because daylight and views are closely related, we design a view metric (sVA3) to exclude sky views, and then interact that measure with the daylight metric (sDA) to isolate the conditional marginal effect of having both high daylight and high view access. We find that spaces with high access to views have a 6% premium over spaces with low access, the same as those with *both* good views and daylight."
+    },
+    {
+      "type": "body",
+      "value": "Access the paper here: [Development of view potential metrics and the financial impact of views on office rents](https://doi.org/10.1016/j.landurbplan.2021.104193)"
+    }
+  ]
+}
