@@ -73,6 +73,18 @@ export function changeContent(stories: types.Story[], targetId?: string) {
     }
 }
 
+export function scrollToTop() {
+    if (currentStories) {
+        currentStories.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        // Update the header text after scrolling
+        setTimeout(updateHeader, 500);
+    }
+}
+
 /**
  * Scroll to a specific story by ID with precise positioning
  */
@@ -347,25 +359,38 @@ function createVideoBlock(value: string): HTMLElement {
     vid.controls = false;
     vid.loop = true;
     vid.muted = true;
-    vid.autoplay = true;
+
+    // Add playsinline for iOS
+    vid.setAttribute('playsinline', '');
+
+    // Delay autoplay initialization on mobile devices
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (!isIOS) {
+        vid.autoplay = true;
+    } else {
+        // For iOS, set autoplay after a delay
+        setTimeout(() => {
+            vid.autoplay = true;
+        }, 300);
+    }
+
     vid.className = 'animation';
     wrapper.appendChild(vid);
 
-    // Toggle controls on hover
-    wrapper.addEventListener('mouseenter', () => {
-        vid.controls = true;
-    });
-    wrapper.addEventListener('mouseleave', () => {
-        vid.controls = false;
-    });
-
+    // Modify the button to check for synthetic events
     const btn = createPopoutButton(() => {
+        // Prevent iOS from auto-opening the modal by checking
+        // if this is a genuine user interaction
+        if (window.event && !window.event.isTrusted) {
+            return;
+        }
+
         const clone = vid.cloneNode(true) as HTMLVideoElement;
         clone.controls = true;
         openMediaModal(clone);
     });
-    wrapper.appendChild(btn);
 
+    wrapper.appendChild(btn);
     return wrapper;
 }
 

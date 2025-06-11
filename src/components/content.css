@@ -117,8 +117,11 @@
 }
 
 .story .caption {
-    margin-top: 0.5rem;
     font-style: italic;
+    border-bottom: .25px solid #000;
+    padding-bottom: 1rem;
+    margin: 1rem 0;
+
 }
 
 .story-container ul,
@@ -211,7 +214,7 @@
 }
 
 
-@media (max-width: 36rem) {
+@media (max-width: 50rem) {
     .content-container {
         width: 100%;
     }

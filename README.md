@@ -1,2 +1,2 @@
 # danielfink.net
-Personal Website
+

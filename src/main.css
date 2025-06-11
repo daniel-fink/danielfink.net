@@ -40,7 +40,7 @@ body {
     flex: 0 0 33.3333%;
 }
 
-@media (max-width: 36rem) {
+@media (max-width: 50rem) {
     .columns {
         flex-direction: column;
     }

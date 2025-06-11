@@ -79,7 +79,7 @@
 
 
 /* Responsive: stack left above right on narrow screens */
-@media (max-width: 36rem) {
+@media (max-width: 50rem) {
     .menu-container {
         flex: 0 0 auto; /* size to its content */
         height: auto;

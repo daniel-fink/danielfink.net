@@ -1,0 +1,44 @@
+{
+  "title": "Urban Transformation Projects",
+  "index": 7,
+  "date": "2023-09-01",
+  "description": "As Urban Design Lead at Grimshaw, I delivered multiple urban design and strategy projects for government and institutional clients. In coordinating and amplifying their inter-disciplinary spatial and operational requirements, these projects exemplify ambitious place- and city-making.",
+  "blocks": [
+    {
+      "type": "body",
+      "value": "##### Central to Eveleigh (C2E) Urban Transformation Strategy\nSydney, Australia, 2013-2015<br><br> 20-year urban transformation strategy aiming to revitalize prime government-owned land in the centre of Sydney, into a vibrant and mixed-use precinct while preserving its industrial heritage."
+    },
+    {
+      "type": "image",
+      "value": "c2e01.jpg"
+    },
+    {
+      "type": "body",
+      "value": "The project showcased a contemporary global city built around compact homes, shared spaces, and strong cultural and community connections. By prioritizing diverse housing, vibrant local economies, high-quality public places, and better transport management, the strategy highlighted inclusive growth through affordable housing, improved transport connections, and public space upgrades."
+    },
+    {
+      "type": "image",
+      "value": "c2e03.png"
+    },
+    {
+      "type": "body",
+      "value": "The engagement facilitated a consultative framework for urban planning among government, industry, and the community, that set the basis for collaboration to guide future masterplanning and precinct development."
+    },
+    {
+      "type": "body",
+      "value": "##### Maribyrnong Defense Site Redevelopment\nMelbourne, Australia, 2011-2013<br><br>Redevelopment of a 128-hectare former Defence Site into one of Victoria’s largest urban infill projects. It aimed to transform a historically closed riverside area into a vibrant, sustainable community. Shaped through extensive community consultation, the project offered diverse and affordable housing, new public open spaces with river access, restored heritage buildings, community facilities, and local employment opportunities."
+    },
+    {
+      "type": "image",
+      "value": "mds02.jpg"
+    },
+    {
+      "type": "body",
+      "value": "The engagement for a comprehensive overall strategic masterplan was to structure the future development's approach and requirements for design, sustainability, infrastructure, delivery, and community consultation. It resulted in documentation of eight key goals, involving strategic rehabilitation of contaminated soil into a waterside park, new transit connections, distinct neighbourhood identities with open space and amenities, and phased development zones integrating employment and housing to ensure financial viability."
+    },
+    {
+      "type": "image",
+      "value": "mds01.png"
+    }
+  ]
+}

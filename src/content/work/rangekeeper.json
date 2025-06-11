@@ -1,12 +1,12 @@
 {
-  "title": "Rangekeeper",
+  "title": "Automated Development Valuation",
   "index": 4,
   "date": null,
-  "description": "Rangekeeper is an open-source Python library designed for financial modeling in real estate asset and development planning, initiated while I was at MIT's Real Estate Innovation Lab and continually developed since.",
+  "description": "Rangekeeper is an open-source Python library that automates financial planning and modeling for real estate assets and development, initiated while I was at MIT's Real Estate Innovation Lab and continually developed since.",
   "blocks": [
     {
       "type": "body",
-      "value": "Rangekeeper enables real estate valuation at all stages and resolutions of description — from early-stage ‘back-of-the-envelope’ models to detailed commercial assessments, and can be completely synchronised with 3D design, engineering, and logistics modelling.<br><br>It decomposes elements of the Discounted Cash Flow (DCF) Proforma modelling approach into recomposable code functions that can be wired together to form a full model."
+      "value": "Rangekeeper enables real estate valuation at all stages and resolutions of description — from early-stage ‘back-of-the-envelope’ models to detailed commercial assessments, and can be completely synchronised with 3D design, engineering, and logistics modelling.<br><br>It decomposes elements of the Discounted Cash Flow (DCF) Proforma modelling approach into re-composable code functions that can be wired together to form a full model."
     },
     {
       "type": "image",

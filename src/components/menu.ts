@@ -2,8 +2,14 @@ import './menu.css';
 import * as content from './content';
 import * as types from './types';
 
+const mobileWidth = 50 * 16; // 50rem in pixels
+
 // === Constants ===
-const MENU_ITEMS = ["About", "Services", "Selected Work"];
+const MENU_ITEMS = [
+    "About",
+    "Services",
+    "Selected Work",
+];
 
 // === Component State ===
 let menuContainer: HTMLDivElement;
@@ -24,9 +30,73 @@ export function initialize(): HTMLDivElement {
 
     // Create menu items
     menuItems = createMenuItems();
+    menuItemClickHandlers();
     menuContainer.appendChild(menuItems);
 
+
+    // Check if we're in mobile mode and open the menu by default
+    if (window.innerWidth <= mobileWidth) {
+        menuItems.classList.add('open');
+
+        // Update the CSS variable for content positioning
+        requestAnimationFrame(() => {
+            const headerHeight = menuHeader.offsetHeight;
+            const itemsHeight = menuItems.offsetHeight;
+            const totalHeight = headerHeight + itemsHeight;
+
+            document.documentElement.style.setProperty(
+                '--menu-total-height',
+                `${totalHeight}px`
+            );
+        });
+    }
+
+    // Add resize listener to handle responsive behavior
+    window.addEventListener('resize', handleResize);
+
     return menuContainer;
+}
+
+/**
+ * Handle window resize events
+ */
+function handleResize(): void {
+    if (window.innerWidth <= mobileWidth) {
+        if (!menuItems.classList.contains('open')) {
+            menuItems.classList.add('open');
+            updateMenuHeight();
+        }
+    }
+}
+
+function menuItemClickHandlers(): void {
+    const menuItemElements = menuItems.querySelectorAll('.menu-item, .sub-menu-item');
+
+    menuItemElements.forEach(item => {
+        item.addEventListener('click', () => {
+            // Only collapse menu if in mobile mode
+            if (window.innerWidth <= mobileWidth) {
+                menuItems.classList.remove('open');
+                updateMenuHeight();
+            }
+        });
+    });
+}
+
+/**
+ * Update the menu height CSS variable
+ */
+function updateMenuHeight(): void {
+    requestAnimationFrame(() => {
+        const headerHeight = menuHeader.offsetHeight;
+        const itemsHeight = menuItems.offsetHeight;
+        const totalHeight = headerHeight + itemsHeight;
+
+        document.documentElement.style.setProperty(
+            '--menu-total-height',
+            `${totalHeight}px`
+        );
+    });
 }
 
 /**
@@ -40,6 +110,13 @@ function createMenuHeader(): HTMLDivElement {
     const headerText = document.createElement('div');
     headerText.className = 'menu-header-text';
     headerText.textContent = 'Daniel Fink';
+    headerText.style.cursor = 'pointer'; // Make it look clickable
+
+    // Add click handler for scrolling to top
+    headerText.addEventListener('click', () => {
+        content.scrollToTop();
+    });
+
     header.appendChild(headerText);
 
     // Add hamburger menu for mobile
