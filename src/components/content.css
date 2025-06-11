@@ -216,7 +216,8 @@
 
 @media (max-width: 50rem) {
     .content-container {
-        width: 100%;
+        width: 90%;
+        margin: 0 auto;
     }
 
     .content-header {
@@ -241,5 +242,9 @@
 
     .story .story-container img {
         max-width: 100%
+    }
+
+    .popout-button {
+        display: none;
     }
 }

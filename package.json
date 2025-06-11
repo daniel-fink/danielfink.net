@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "predeploy": "echo www.danielfink.net > dist/CNAME",
+    "predeploy": "npm run build && echo www.danielfink.net > dist/CNAME",
     "deploy": "gh-pages -d dist -b deploy"
   },
   "keywords": [],
