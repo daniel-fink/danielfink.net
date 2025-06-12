@@ -1,0 +1,22 @@
+{
+  "title": "Approach",
+  "index": 0,
+  "blocks": [
+    {
+      "type": "subtitle",
+      "value": "Linking Design to Finance"
+    },
+    {
+      "type": "body",
+      "value": "New digital tools are making it easier to create detailed, accurate models of property development. By combining financial analysis with design and delivery planning, teams can now get a clear, shared view of how a project is likely to perform and where the opportunities lie."
+    },
+    {
+      "type": "subtitle",
+      "value": "Tailored Solutions from Common Foundations"
+    },
+    {
+      "type": "body",
+      "value": "Every project is different, but starting from scratch each time is risky. By turning expert knowledge — like rules of thumb, benchmarks, and best practices — into software and data tools, we can build flexible foundations that others can use and adapt. On top of that, we can create custom tools for each project or client. This approach lets teams use the best available methods while still keeping their unique expertise."
+    }
+  ]
+}

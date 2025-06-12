@@ -1,0 +1,34 @@
+{
+  "title": "About",
+  "blocks": [
+    {
+      "type": "image",
+      "popout": false,
+      "value": "df_profile-sq.png"
+    },
+    {
+      "type": "body",
+      "value": "Daniel Fink is an expert in applying the state-of-the-art to architecture, planning, and property development. With over fifteen years experience in both practice and academia, his focus is in building digital and physical workflows, platforms, and tools that integrate computational design, real estate finance and geospatial science, with project and product delivery."
+    },
+    {
+      "type": "body",
+      "value": "Daniel is currently an Independent Consultant to commercial, academic, and government clients, and is a Senior Associate at AR-MA, an advanced design computing and fabrication consultancy. He was previously a Lead Researcher at MIT’s Real Estate Innovation Lab, and was an Urban Design Project Lead at Grimshaw Architects. He has directed numerous design, software, & research teams, published academic papers in leading journals, had work featured at multiple exhibitions, and been an invited lecturer at major universities around the world. Daniel holds a Master of Science in Architecture from MIT, and a Master of Architecture and Bachelor in Design from the University of Sydney."
+    },
+    {
+      "type": "body",
+      "value": "Independent Consultant<br>Senior Associate, [AR-MA](https://ar-ma.net)<br>Advisor, [Black Oak Group](https://blackoakgroup.co)<br>Lead Researcher (fmr.), [MIT Real Estate Innovation Lab](https://realestateinnovationlab.mit.edu)"
+    },
+    {
+      "type": "body",
+      "value": "SMArchS (Massachusetts Institute of Technology)<br>MArch (Hons.) (University of Sydney)<br>BDesArch (University of Sydney)"
+    },
+    {
+      "type": "body",
+      "value": "Email: daniel@danielfink.net<br>Github: [github.com/daniel-fink](https://www.github.com/daniel-fink)"
+    },
+    {
+      "type": "body",
+      "value": "Download my CV here: [Curriculum Vitae](/dfink-cv.pdf)"
+    }
+  ]
+}

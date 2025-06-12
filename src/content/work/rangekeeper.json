@@ -1,0 +1,44 @@
+{
+  "title": "Automated Development Valuation",
+  "index": 4,
+  "date": null,
+  "description": "Rangekeeper is an open-source Python library that automates financial planning and modeling for real estate assets and development, initiated while I was at MIT's Real Estate Innovation Lab and continually developed since.",
+  "blocks": [
+    {
+      "type": "body",
+      "value": "Rangekeeper enables real estate valuation at all stages and resolutions of description — from early-stage ‘back-of-the-envelope’ models to detailed commercial assessments, and can be completely synchronised with 3D design, engineering, and logistics modelling.<br><br>It decomposes elements of the Discounted Cash Flow (DCF) Proforma modelling approach into re-composable code functions that can be wired together to form a full model."
+    },
+    {
+      "type": "image",
+      "value": "rk01.png"
+    },
+    {
+      "type": "body",
+      "value": "Development of the library follows the rigorous methodology established by MIT Professors David Geltner and Richard de Neufville, in their book [Flexibility and Real Estate Valuation under Uncertainty: A Practical Guide for Developers](https://www.wiley.com/go/geltner-deneufville/flexibility-and-real-estate-valuation), and expands it into a more robust computational framework.<br><br>Critically, Rangekeeper provides two key features:\n1. Market dynamics and flexibility policies that simulate real-world decision-making for development projects. By simulating real options (like go-no-go decisions) in response to real estate market idiosyncrasies like cyclicality, mean-reversion, and volatility, Rangekeeper can identify *optionality alpha* and nonlinear payoffs for a project.\n2. An entity-relationship graph schema of a real estate asset that is ultra-configurable for modelling any project type or topology. Rangekeeper uses the object model for aggregations (roll-ups) of cash flows in order to evaluate financial performance of the project at any resolution."
+    },
+    {
+      "type": "image",
+      "value": "rk02.png"
+    },
+    {
+      "type": "body",
+      "value": "Because it enables the *programmatic* simulation of the financial performance and flexibility of a real estate asset under uncertainty, Rangekeeper is intended to be tied to other representations of a project, such as 3D CAD, BIM, GIS, and OT (management & operations). This offers a more sophisticated, and realistic, simulation of real estate investment scenarios."
+    },
+    {
+      "type": "image",
+      "value": "rk03.png"
+    },
+    {
+      "type": "image",
+      "value": "rk04.png"
+    },
+    {
+      "type": "body",
+      "value": "The first integrations are with [Speckle](https://speckle.systems) (a platform for connecting 3D design and engineering data) via an API, and [Rhinoceros 3D's Grasshopper](https://www.rhino3d.com/grasshopper) (a visual programming environment), via a set of Grasshopper components that extend Speckle Objects with Rangekeeper entity-relationship graph features."
+    },
+    {
+      "type": "body",
+      "value": "Rangekeeper is hosted on GitHub here: [https://github.com/daniel-fink/rangekeeper](https://github.com/daniel-fink/rangekeeper), and a walkthrough explaining its use and features can be found here: [https://daniel-fink.github.io/rangekeeper/](https://daniel-fink.github.io/rangekeeper/)"
+    }
+  ]
+}

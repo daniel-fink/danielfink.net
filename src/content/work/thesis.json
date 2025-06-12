@@ -1,0 +1,48 @@
+{
+  "title": "Linking Design to Finance",
+  "index": 0,
+  "date": "2017-05-25",
+  "description": "'Linking Design to Finance: Enabling a Co-Operative Developer Platform through Automated Design and Valuation' was a SMArchS thesis at MIT, completed in 2017. It explores the intersection of design computation and finance in urban development.",
+  "blocks": [
+    {
+      "type": "body",
+      "value": "Urban design is undergoing a transformation. As data becomes ubiquitous, computation more powerful, and finance more abstracted, the instruments of city-making — currently harnessed by well-capitalized and sophisticated actors — are increasingly within reach.<br><br> This thesis asks: *what happens when design, data, and finance are not just digitized, but democratized?*<br><br> Grounded in both innovation diffusion theory and precedents of collective urban production (from co-housing to co-working), the thesis responds to a key structural challenge: while urban design and feasibility analysis are increasingly supported by automation and data, access to land and capital remains prohibitively exclusive. The project hypothesizes that linking generative design tools with real-time financial modelling can lower participation barriers and enable decentralized, community-led development."
+    },
+    {
+      "type": "image",
+      "value": "thesis01.png"
+    },
+    {
+      "type": "body",
+      "value": "The technical core involves two linked systems, hypothesised as patents for computer systems:"
+    },
+    {
+      "type": "video",
+      "value": "nycd316.mp4"
+    },
+    {
+      "type": "body",
+      "value": "1. *A design rationalization engine*, which adjusts user-drawn building forms to meet spatial and policy constraints, while retaining design intent. It shifts design from drawing to reasoning, enabling rapid exploration of viable options and envisages an easier on-ramp to urban form-making for non-experts."
+    },
+    {
+      "type": "video",
+      "value": "nycd111-sm.mp4"
+    },
+    {
+      "type": "body",
+      "value": "2. *An automated financial simulator*, which calculates a design's cash flows and development costs in real time. It closes the gap between design intent and feasibility, reveals hidden financial constraints, and invites broader participation in development decisions."
+    },
+    {
+      "type": "body",
+      "value": "A design project follows that speculates on the productivity of those patents within a *computational co-developer platform*: a system that lets groups simulate and shape viable urban projects across multiple sites. I tested these tools through a speculative case study in New York City — spanning 36 sites and 1,000 inhabitants — not as a proposal, but as a provocation:<br><br> *What if distributed groups could originate, fund, and deliver their own networks of housing and workspace?*<br><br>The system generates thousands of development permutations; visualized as a ‘performance surface’ spanning design inputs (ie FAR and open-space ratios) and financial outcomes (NPV and IRR). Recognizing that not all individual parcels must be profitable on their own, the project introduces a portfolio-based strategy: enabling cross-subsidization between sites, programs, and typologies to optimize return and space utility across the collective<br><br>The optimization problem — balancing financial yield, spatial provision, and site constraints — is solved via non-linear methods, due to the lumpy, discontinuous nature of the design-performance space. The result is a development logic akin to portfolio theory: maximizing aggregate value while tolerating variance in individual asset performance.<br><br>This work ultimately proposes a new role for platform technologies in shaping urban production. By extending access to both financial insight and design agency, the system reframes the developer as a distributed, participatory entity, aligned around co-ownership, co-design, and co-programming. It suggests a pathway toward public-facing capital stacks and user-driven urban form, operationalizing the ‘right to the city’ through computational tools."
+    },
+    {
+      "type": "image",
+      "value": "thesis03.png"
+    },
+    {
+      "type": "body",
+      "value": "Download the thesis from MIT's DSpace repository: [Linking Design to Finance](https://dspace.mit.edu/handle/1721.1/115439)"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "title": "Computational Prospecting",
+  "index": 6,
+  "date": "2023-09-01",
+  "description": "Whirlwind is a computational prospecting and pre-development workflow. It uses a suite of open-source tools, like Rangekeeper, to assist data preparation, analysis, and visualization for automating site prospecting and projecting financial valuations. ",
+  "blocks": [
+    {
+      "type": "body",
+      "value": "A first use-case of Whirlwind was to identify and evaluate profitability of developing Duplexes (dual-occupancies) in R1 and R2 zones of the Greater Sydney Metropolitan Area."
+    },
+    {
+      "type": "image",
+      "value": "whirlwind02.png"
+    },
+    {
+      "type": "body",
+      "value": "Whirlwind works in three steps:\n1. Acquisitions Analysis: a geostatistical projection of acquisition prices for legally conformant parcels based on historical sales data across 12,000+ [SA1 regions](https://www.abs.gov.au/census/guide-census-data/geography/census-geography-glossary#statistical-area-level-1-sa1-), using a multi-variate regression model.\n2. Dispositions Analysis: similarly, a projection of average sales price for  developed Duplex units per SA1, based on historical sales data.\n3. A unique financial feasibility analysis per SA1, taking into account the location's projected average acquisition and disposition prices, as well as development and construction costs based on a templated Duplex design.<br><br> The result is a set of development feasibility metrics for each of the 12,000+ SA1 regions in Greater Sydney, which can be used to identify the most profitable regions for more investigation and tuning to local characteristics."
+    },
+    {
+      "type": "image",
+      "value": "whirlwind01.png"
+    },
+    {
+      "type": "body",
+      "value": "The workflow also facilitates sophisticated examination and exploration of the results, such as tracking trends of developable opportunity transactions over time, ranking best-performing neighborhoods, or visualising the distribution of lot dimensions (width and height), which can then be used to drive design and construction strategies."
+    },
+    {
+      "type": "image",
+      "value": "whirlwind03.png"
+    },
+    {
+      "type": "caption",
+      "value": "Visualising the distribution of development opportunity parcel dimensions, by their projected profitability"
+    },
+    {
+      "type": "image",
+      "value": "whirlwind04.png"
+    },
+    {
+      "type": "caption",
+      "value": "Ranking of SA2 regions by their projected profitability and capital requirements."
+    }
+  ]
+}

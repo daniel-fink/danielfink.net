@@ -1,0 +1,185 @@
+/* components/menu.css */
+.menu-container {
+    position: relative;
+    flex: 1; /* allow the container to fill the left column */
+}
+
+.menu-container .menu-header {
+    position: absolute;
+    top: clamp(0px, 25vh, 9rem);
+    height: 1.75rem;
+    width: 100%; /* now spans full width of its parent */
+}
+
+.menu-container .menu-header-text {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #000;
+    text-align: right;
+    font-size: .85rem;
+    font-weight: 700;
+}
+
+.menu-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -.25px;
+    width: 100%;
+    height: 0.5px;
+    background: #000;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.333333);
+}
+
+/* Hamburger toggle */
+.menu-container .hamburger {
+    display: none;
+}
+
+.columns.menu-expanded > .content-container {
+    transform: translateY(var(--menu-total-height));
+    transition: transform 0.3s ease-in-out;
+}
+
+.menu-container .menu-items {
+    position: absolute;
+    top: calc(clamp(0px, 25vh, 9rem) + 2rem);
+    right: 0;
+    width: 18rem;
+    text-align: right;
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column; /* stack label + submenu */
+    align-items: flex-end; /* keep label & items right-aligned */
+    text-align: right;
+    /*height: 2rem;*/
+    border-bottom: 0.25px solid #000;
+    padding: 0.5rem 0rem; /* replaces fixed height */
+    font-size: .825rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+
+.menu-item .sub-menu {
+    display: block; /* always visible, in flow */
+    width: 100%;
+    margin-top: .25rem; /* indent submenu items */
+}
+
+.menu-item .sub-menu-item {
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-weight: 300;
+    /*padding: 1 0rem;*/
+    /*border-bottom: 0.25px solid #000;*/
+}
+
+
+/* Responsive: stack left above right on narrow screens */
+@media (max-width: 50rem) {
+    .menu-container {
+        flex: 0 0 auto; /* size to its content */
+        height: auto;
+    }
+
+    .menu-container .menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 1.25rem;
+        width: 100%;
+        height: 1.75rem;
+    }
+
+    .menu-container .hamburger {
+        display: block;
+        position: absolute;
+        left: 1.5rem;
+        transform: translateY(-50%);
+        font-size: 1.25rem;
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    .menu-container .menu-header-text {
+        position: static;
+        transform: translateY(-55%);
+        text-align: center;
+    }
+
+    /* Remove the existing transform rule */
+    .columns.menu-expanded > .content-container {
+        /* Remove this rule */
+    }
+
+    /* Replace with this improved rule */
+    .columns > .content-container {
+        transition: margin-top 0.3s ease-in-out;
+    }
+
+    .columns:has(.menu-container .menu-items.open) > .content-container {
+        /* Using margin-top as our single positioning method */
+        margin-top: var(--menu-total-height);
+    }
+
+    .menu-container .menu-items {
+        position: fixed;
+        top: calc(3rem + 1px); /* Position from top of viewport */
+        left: 0;
+        right: 0; /* Full width */
+        text-align: center; /* Center text in mobile */
+        width: 100%;
+        max-height: 0; /* Start collapsed */
+        overflow: hidden;
+        transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        background-color: #f1f1f1;
+        padding: 0;
+        margin: 0;
+        z-index: 1000;
+    }
+
+    .menu-container .menu-items.open {
+        max-height: var(--menu-items-max-height, 512px); /* Use variable with fallback */
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        transition: max-height 0.3s ease-in, padding 0.3s ease-in;
+    }
+
+    .menu-item {
+        text-align: center; /* Center menu items on mobile */
+        align-items: center; /* Center inner elements */
+        border-bottom: 0.25px solid #000;
+    }
+
+    .menu-item .sub-menu {
+        display: none;
+    }
+
+
+    /* Show submenu when parent has 'expanded' class */
+    .menu-item.expanded .sub-menu {
+        display: block;
+    }
+
+    .menu-item .sub-menu-item {
+        justify-content: center;
+    }
+}
+
+/* Hide header text when viewport is extremely narrow */
+@media (max-width: 9rem) {
+    .menu-container .hamburger {
+        position: static;
+    }
+
+    .menu-container .menu-header-text {
+        display: none;
+    }
+}
