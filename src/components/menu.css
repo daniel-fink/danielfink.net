@@ -146,7 +146,7 @@
     }
 
     .menu-container .menu-items.open {
-        max-height: var(--menu-items-max-height, 500px); /* Use variable with fallback */
+        max-height: var(--menu-items-max-height, 512px); /* Use variable with fallback */
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
         transition: max-height 0.3s ease-in, padding 0.3s ease-in;

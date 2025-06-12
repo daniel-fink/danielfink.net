@@ -39,6 +39,7 @@ export function initialize(): HTMLDivElement {
 
     // Initialize components
     createMediaModal();
+    createBackToTopButton();
     changeContent(currentContent);
 
     return container;
@@ -423,4 +424,33 @@ function createPopoutButton(onClick: () => void): HTMLButtonElement {
     btn.innerHTML = '<i class="fa-solid fa-up-right-from-square"></i>';
     btn.addEventListener('click', onClick);
     return btn;
+}
+
+/**
+ * Create and manage the "back to top" button
+ */
+function createBackToTopButton(): void {
+    const backToTopBtn = document.createElement('div');
+    backToTopBtn.className = 'back-to-top';
+    backToTopBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+
+    // Add to DOM
+    document.body.appendChild(backToTopBtn);
+
+    // Click handler scrolls content to top
+    backToTopBtn.addEventListener('click', () => {
+        scrollToTop();
+    });
+
+    // Show/hide based on scroll position
+    if (currentStories) {
+        currentStories.addEventListener('scroll', () => {
+            // Show button when scrolled down a bit (100px)
+            if (currentStories.scrollTop > 100) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+    }
 }

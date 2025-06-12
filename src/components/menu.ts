@@ -51,6 +51,12 @@ export function initialize(): HTMLDivElement {
     document.addEventListener('wheel', handleDocumentWheel, {passive: true});
 
     // Initialize menu height and state
+    initializeMenuHeights();
+
+    return menuContainer;
+}
+
+function initializeMenuHeights(): void {
     requestAnimationFrame(() => {
         // Force menu items to be measurable without affecting display
         menuItems.style.position = 'absolute';
@@ -77,8 +83,6 @@ export function initialize(): HTMLDivElement {
             updateMenuHeight();
         }
     });
-
-    return menuContainer;
 }
 
 /**
