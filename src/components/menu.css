@@ -158,6 +158,15 @@
         border-bottom: 0.25px solid #000;
     }
 
+    .menu-item .sub-menu {
+        display: none;
+    }
+
+    /* Show submenu when parent has 'expanded' class */
+    .menu-item.expanded .sub-menu {
+        display: block;
+    }
+
     .menu-item .sub-menu-item {
         justify-content: center;
     }

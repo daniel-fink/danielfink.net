@@ -37,25 +37,20 @@ export function initialize(): HTMLDivElement {
     menuItemClickHandlers();
     menuContainer.appendChild(menuItems);
 
+    // Add resize listener to handle responsive behavior
+    window.addEventListener('resize', handleResize);
 
-    // Check if we're in mobile mode and open the menu by default
-    if (window.innerWidth <= mobileWidth) {
-        menuItems.classList.add('open');
-
-        // Update the CSS variable for content positioning
-        requestAnimationFrame(() => {
-            const headerHeight = menuHeader.offsetHeight;
-            const itemsHeight = menuItems.offsetHeight;
-            const totalHeight = headerHeight + itemsHeight;
-
-            document.documentElement.style.setProperty(
-                '--menu-total-height',
-                `${totalHeight}px`
-            );
-        });
+    // Add scroll listener for content container - simplified approach
+    const contentContainer = document.querySelector('.content-items');
+    if (contentContainer) {
+        // Use standard scroll event instead of touch events
+        contentContainer.addEventListener('scroll', handleContentScroll);
     }
 
-    // Store initial heights after elements are created
+    // Add document scroll listener for desktop testing in mobile mode
+    document.addEventListener('wheel', handleDocumentWheel, {passive: true});
+
+    // Initialize menu height and state
     requestAnimationFrame(() => {
         // Force menu items to be measurable without affecting display
         menuItems.style.position = 'absolute';
@@ -82,18 +77,6 @@ export function initialize(): HTMLDivElement {
             updateMenuHeight();
         }
     });
-
-    // Add resize listener to handle responsive behavior
-    window.addEventListener('resize', handleResize);
-
-    // Add scroll listeners for both the content container and document
-    const contentContainer = document.querySelector('.content-container');
-    if (contentContainer) {
-        contentContainer.addEventListener('scroll', handleContentScroll);
-    }
-
-    // Add document scroll listener for desktop testing in mobile mode
-    document.addEventListener('wheel', handleDocumentWheel, {passive: true});
 
     return menuContainer;
 }
@@ -130,17 +113,11 @@ function menuItemClickHandlers(): void {
 function handleContentScroll(event: Event): void {
     if (window.innerWidth > mobileWidth) return;
 
-    const container = event.target as HTMLElement;
-    const scrollTop = container.scrollTop;
-
-    // If scrolling down, hide the menu
-    if (scrollTop > lastScrollTop) {
+    // Immediately close menu on any scroll event in mobile view
+    if (menuItems.classList.contains('open')) {
         menuItems.classList.remove('open');
-        updateMenuHeight(); // Add this line
+        updateMenuHeight();
     }
-
-    // Update last scroll position
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 }
 
 /**
@@ -149,12 +126,12 @@ function handleContentScroll(event: Event): void {
 function handleDocumentWheel(event: WheelEvent): void {
     if (window.innerWidth > mobileWidth) return;
 
-    // Positive deltaY means scrolling down
     if (event.deltaY > 0) {
         menuItems.classList.remove('open');
-        updateMenuHeight(); // Add this line
+        updateMenuHeight();
     }
 }
+
 
 /**
  * Update the menu height CSS variable
@@ -184,9 +161,15 @@ function createMenuHeader(): HTMLDivElement {
     headerText.textContent = 'Daniel Fink';
     headerText.style.cursor = 'pointer'; // Make it look clickable
 
-    // Add click handler for scrolling to top
+    // Add click handler that checks for mobile/desktop
     headerText.addEventListener('click', () => {
-        content.scrollToTop();
+        if (window.innerWidth <= mobileWidth) {
+            // In mobile mode, toggle menu like hamburger does
+            toggleMobileMenu();
+        } else {
+            // In desktop mode, keep original scroll-to-top behavior
+            content.scrollToTop();
+        }
     });
 
     header.appendChild(headerText);
