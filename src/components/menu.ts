@@ -15,6 +15,9 @@ const MENU_ITEMS = [
 let menuContainer: HTMLDivElement;
 let menuItems: HTMLDivElement;
 let menuHeader: HTMLDivElement;
+
+let menuItemsHeight: number = 0; // Store calculated menu height
+let menuHeaderHeight: number = 0; // Store header height
 let lastScrollTop = 0;
 
 /**
@@ -51,6 +54,34 @@ export function initialize(): HTMLDivElement {
             );
         });
     }
+
+    // Store initial heights after elements are created
+    requestAnimationFrame(() => {
+        // Force menu items to be measurable without affecting display
+        menuItems.style.position = 'absolute';
+        menuItems.style.visibility = 'hidden';
+        menuItems.style.maxHeight = 'none';
+        menuItems.classList.add('open');
+
+        // Measure and store heights
+        menuItemsHeight = menuItems.offsetHeight;
+        menuHeaderHeight = menuHeader.offsetHeight;
+
+        // Reset styles
+        menuItems.style.position = '';
+        menuItems.style.visibility = '';
+        menuItems.style.maxHeight = '';
+        menuItems.classList.remove('open');
+
+        // Set the CSS variable with our stored value
+        document.documentElement.style.setProperty('--menu-items-max-height', `${menuItemsHeight}px`);
+
+        // If starting in mobile mode, initialize properly
+        if (window.innerWidth <= mobileWidth) {
+            menuItems.classList.add('open');
+            updateMenuHeight();
+        }
+    });
 
     // Add resize listener to handle responsive behavior
     window.addEventListener('resize', handleResize);
@@ -128,18 +159,16 @@ function handleDocumentWheel(event: WheelEvent): void {
 /**
  * Update the menu height CSS variable
  */
+// Update the menu height function to also use stored values
 function updateMenuHeight(): void {
-    requestAnimationFrame(() => {
-        const headerHeight = menuHeader.offsetHeight;
-        // If menu is closed, use 0 for its height
-        const itemsHeight = menuItems.classList.contains('open') ? menuItems.offsetHeight : 0;
-        const totalHeight = headerHeight + itemsHeight;
+    // Calculate total height based on stored values
+    const totalHeight = menuHeaderHeight +
+        (menuItems.classList.contains('open') ? menuItemsHeight : 0);
 
-        document.documentElement.style.setProperty(
-            '--menu-total-height',
-            `${totalHeight}px`
-        );
-    });
+    document.documentElement.style.setProperty(
+        '--menu-total-height',
+        `${totalHeight}px`
+    );
 }
 
 /**
@@ -188,37 +217,17 @@ function createHamburgerToggle(): HTMLDivElement {
 function toggleMobileMenu(): void {
     const isOpening = !menuItems.classList.contains('open');
 
+    // Set the CSS variable using stored height (no recalculation needed)
+    document.documentElement.style.setProperty('--menu-items-max-height', `${menuItemsHeight}px`);
+
     if (isOpening) {
-        // Temporarily remove max-height restriction to measure actual height
-        menuItems.style.position = 'absolute';
-        menuItems.style.visibility = 'hidden';
-        menuItems.style.maxHeight = 'none';
         menuItems.classList.add('open');
-
-        // Force layout calculation
-        document.body.offsetHeight;
-
-        // Measure the natural height
-        const actualHeight = menuItems.offsetHeight;
-
-        // Reset styles
-        menuItems.style.position = '';
-        menuItems.style.visibility = '';
-        menuItems.style.maxHeight = '';
-        menuItems.classList.remove('open');
-
-        // Set the CSS variable with measured height
-        document.documentElement.style.setProperty('--menu-items-max-height', `${actualHeight}px`);
-
-        // Now toggle the open class for real
-        requestAnimationFrame(() => {
-            menuItems.classList.add('open');
-            updateMenuHeight();
-        });
     } else {
         menuItems.classList.remove('open');
-        updateMenuHeight();
     }
+
+    // Update content position with a slight delay to ensure browser applies changes
+    setTimeout(updateMenuHeight, 10);
 }
 
 /**
