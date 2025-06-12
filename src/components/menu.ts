@@ -15,6 +15,7 @@ const MENU_ITEMS = [
 let menuContainer: HTMLDivElement;
 let menuItems: HTMLDivElement;
 let menuHeader: HTMLDivElement;
+let lastScrollTop = 0;
 
 /**
  * Initialize the menu component
@@ -54,6 +55,15 @@ export function initialize(): HTMLDivElement {
     // Add resize listener to handle responsive behavior
     window.addEventListener('resize', handleResize);
 
+    // Add scroll listeners for both the content container and document
+    const contentContainer = document.querySelector('.content-container');
+    if (contentContainer) {
+        contentContainer.addEventListener('scroll', handleContentScroll);
+    }
+
+    // Add document scroll listener for desktop testing in mobile mode
+    document.addEventListener('wheel', handleDocumentWheel, {passive: true});
+
     return menuContainer;
 }
 
@@ -84,12 +94,45 @@ function menuItemClickHandlers(): void {
 }
 
 /**
+ * Handle content scroll events to hide menu in mobile view
+ */
+function handleContentScroll(event: Event): void {
+    if (window.innerWidth > mobileWidth) return;
+
+    const container = event.target as HTMLElement;
+    const scrollTop = container.scrollTop;
+
+    // If scrolling down, hide the menu
+    if (scrollTop > lastScrollTop) {
+        menuItems.classList.remove('open');
+        updateMenuHeight(); // Add this line
+    }
+
+    // Update last scroll position
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+}
+
+/**
+ * Handle wheel events on document for desktop testing
+ */
+function handleDocumentWheel(event: WheelEvent): void {
+    if (window.innerWidth > mobileWidth) return;
+
+    // Positive deltaY means scrolling down
+    if (event.deltaY > 0) {
+        menuItems.classList.remove('open');
+        updateMenuHeight(); // Add this line
+    }
+}
+
+/**
  * Update the menu height CSS variable
  */
 function updateMenuHeight(): void {
     requestAnimationFrame(() => {
         const headerHeight = menuHeader.offsetHeight;
-        const itemsHeight = menuItems.offsetHeight;
+        // If menu is closed, use 0 for its height
+        const itemsHeight = menuItems.classList.contains('open') ? menuItems.offsetHeight : 0;
         const totalHeight = headerHeight + itemsHeight;
 
         document.documentElement.style.setProperty(
@@ -143,18 +186,39 @@ function createHamburgerToggle(): HTMLDivElement {
  * Toggle mobile menu visibility and update CSS variables
  */
 function toggleMobileMenu(): void {
-    menuItems.classList.toggle('open');
+    const isOpening = !menuItems.classList.contains('open');
 
-    requestAnimationFrame(() => {
-        const headerHeight = menuHeader.offsetHeight;
-        const itemsHeight = menuItems.offsetHeight;
-        const totalHeight = headerHeight + itemsHeight;
+    if (isOpening) {
+        // Temporarily remove max-height restriction to measure actual height
+        menuItems.style.position = 'absolute';
+        menuItems.style.visibility = 'hidden';
+        menuItems.style.maxHeight = 'none';
+        menuItems.classList.add('open');
 
-        document.documentElement.style.setProperty(
-            '--menu-total-height',
-            `${totalHeight}px`
-        );
-    });
+        // Force layout calculation
+        document.body.offsetHeight;
+
+        // Measure the natural height
+        const actualHeight = menuItems.offsetHeight;
+
+        // Reset styles
+        menuItems.style.position = '';
+        menuItems.style.visibility = '';
+        menuItems.style.maxHeight = '';
+        menuItems.classList.remove('open');
+
+        // Set the CSS variable with measured height
+        document.documentElement.style.setProperty('--menu-items-max-height', `${actualHeight}px`);
+
+        // Now toggle the open class for real
+        requestAnimationFrame(() => {
+            menuItems.classList.add('open');
+            updateMenuHeight();
+        });
+    } else {
+        menuItems.classList.remove('open');
+        updateMenuHeight();
+    }
 }
 
 /**
