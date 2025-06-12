@@ -162,6 +162,7 @@
         display: none;
     }
 
+
     /* Show submenu when parent has 'expanded' class */
     .menu-item.expanded .sub-menu {
         display: block;

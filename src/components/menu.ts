@@ -205,12 +205,46 @@ function toggleMobileMenu(): void {
 
     if (isOpening) {
         menuItems.classList.add('open');
+
+        // Automatically expand the Selected Work submenu
+        const selectedWorkItem = menuItems.querySelector('.menu-item:has(.sub-menu)');
+        if (selectedWorkItem) {
+            selectedWorkItem.classList.add('expanded');
+        }
+
+        // Recalculate menu height to include submenu
+        requestAnimationFrame(recalculateMenuHeight);
     } else {
         menuItems.classList.remove('open');
+
+        // Collapse Selected Work submenu when closing menu
+        const selectedWorkItem = menuItems.querySelector('.menu-item.expanded');
+        if (selectedWorkItem) {
+            selectedWorkItem.classList.remove('expanded');
+        }
     }
 
     // Update content position with a slight delay to ensure browser applies changes
     setTimeout(updateMenuHeight, 10);
+}
+
+/**
+ * Recalculate the total menu height including expanded submenus
+ */
+function recalculateMenuHeight(): void {
+    // Force menu items to be measurable
+    const originalMaxHeight = menuItems.style.maxHeight;
+    menuItems.style.maxHeight = 'none';
+
+    // Get the actual height including expanded submenus
+    menuItemsHeight = menuItems.offsetHeight;
+
+    // Restore original max-height
+    menuItems.style.maxHeight = originalMaxHeight;
+
+    // Update CSS variable
+    document.documentElement.style.setProperty('--menu-items-max-height', `${menuItemsHeight}px`);
+    updateMenuHeight();
 }
 
 /**
@@ -242,7 +276,7 @@ function createMenuItem(text: string): HTMLDivElement {
 
     // Add submenu for "Selected Work" section
     if (text === 'Selected Work') {
-        const subMenu = createWorkSubmenu();
+        const subMenu = createSubmenu();
         item.appendChild(subMenu);
     }
 
@@ -269,7 +303,7 @@ function handleMenuItemClick(menuText: string): void {
 /**
  * Create submenu for work section with project links
  */
-function createWorkSubmenu(): HTMLDivElement {
+function createSubmenu(): HTMLDivElement {
     const subMenu = document.createElement('div');
     subMenu.className = 'sub-menu';
 
