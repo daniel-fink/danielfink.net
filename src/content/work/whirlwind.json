@@ -1,8 +1,8 @@
 {
-  "title": "Computational Prospecting",
+  "title": "Data-driven Prospecting",
   "index": 6,
   "date": "2023-09-01",
-  "description": "Whirlwind is a computational prospecting and pre-development workflow. It uses a suite of open-source tools, like Rangekeeper, to assist data preparation, analysis, and visualization for automating site prospecting and projecting financial valuations. ",
+  "description": "Whirlwind is a data-driven workflow for automating site prospecting and pre-development analysis. It uses a suite of open-source tools, like Rangekeeper, to assist data preparation, assessment, and visualization of development opportunities.",
   "blocks": [
     {
       "type": "body",
