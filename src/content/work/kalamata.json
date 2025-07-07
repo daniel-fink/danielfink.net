@@ -1,6 +1,6 @@
 {
   "title": "Floor-shape Constraint Solving",
-  "index": 5,
+  "index": 6,
   "date": null,
   "description": "A toolset that reshapes building floorplates while maintaining overall area and design intent. Developed in response to difficulties in complying with both planning constraints and design intent during early-stage urban form development.",
   "blocks": [

@@ -1,0 +1,32 @@
+{
+  "title": "Interactive Development Exploration",
+  "index": 5,
+  "date": "2018-05-08",
+  "description": "A collaboration with the City of Boston's Housing Innovation Lab, producing a webapp for exploring development scenarios through interactive lessons, that visualizes how planning policies impact housing affordability, neighborhood character, and feasibility.",
+  "blocks": [
+    {
+      "type": "image",
+      "value": "hil01.png"
+    },
+    {
+      "type": "body",
+      "value": "The webapp presents four lesson-modules that explore aspects of housing production. Each lesson contains information about a specific topic in planning & development regulation, and then allows users to explore the implications of those regulations in a 3D visualization."
+    },
+    {
+      "type": "image",
+      "value": "hil02.png"
+    },
+    {
+      "type": "body",
+      "value": "The lessons start with the basics of planning regulations, then dive into how budgets and affordability intersect, trade-offs of parking requirements, and how policies for compact apartments affect affordability. In the final module, users can mix and match all variables to explore real-world development trade-offs, from cost and feasibility to building size and affordability."
+    },
+    {
+      "type": "image",
+      "value": "hil03.png"
+    },
+    {
+      "type": "body",
+      "value": "Visit the webapp to explore the lessons and visualizations here: [Understanding Housing Development: An Interactive Educational Toolkit](https://placeful.github.io/housingilab/)"
+    }
+  ]
+}
