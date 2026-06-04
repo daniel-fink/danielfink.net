@@ -12,6 +12,7 @@ export const work = loadContent(import.meta.glob(`../content/work/*.json`, {eage
 let currentContent: types.Story[] = [];
 let currentSection: url.ContentSection = 'about';
 let currentHeader: HTMLDivElement;
+let currentHeaderTarget = '';
 let currentStories: HTMLDivElement;
 let modalOverlay: HTMLDivElement;
 let modalContent: HTMLDivElement;
@@ -77,7 +78,8 @@ export function changeContent(stories: types.Story[], targetId?: string, section
     // Update state and render content
     currentContent = stories;
     currentSection = section;
-    currentHeader.textContent = stories[0]?.title ?? '';
+    currentHeaderTarget = '';
+    setContentHeader(stories[0]);
     currentStories.innerHTML = '';
     stories.forEach(story => currentStories.appendChild(renderStory(story)));
     updateHeader();
@@ -199,15 +201,32 @@ function verifyScrollPosition(titleEl: HTMLElement) {
  */
 function updateHeader() {
     const position = currentStories.scrollTop + currentHeader.offsetHeight;
-    let current = currentContent[0]?.title ?? '';
+    let current = currentContent[0];
 
     for (const element of currentStories.querySelectorAll<HTMLElement>('.story')) {
         if (element.offsetTop > position) break;
-        const title = element.querySelector<HTMLElement>('.story-title-text')?.textContent;
-        if (title) current = title;
+        const story = url.findStoryByTarget(currentContent, element.dataset.slug ?? '');
+        if (story) current = story;
     }
 
-    currentHeader.textContent = current;
+    setContentHeader(current);
+}
+
+function setContentHeader(story?: types.Story): void {
+    const target = story ? `${currentSection}:${url.getStorySlug(story)}` : '';
+    if (currentHeaderTarget === target) return;
+
+    currentHeaderTarget = target;
+    currentHeader.innerHTML = '';
+
+    const headerText = document.createElement('span');
+    headerText.className = 'content-header-text';
+    headerText.textContent = story?.title ?? '';
+    currentHeader.appendChild(headerText);
+
+    if (story && currentSection === 'work') {
+        currentHeader.appendChild(createCopyLinkButton(story));
+    }
 }
 
 /**

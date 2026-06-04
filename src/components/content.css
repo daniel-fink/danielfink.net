@@ -7,6 +7,9 @@
 
 .content-header {
     position: absolute;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
     top: clamp(0px, 25vh, 9rem);
     height: 1.75rem;
     width: 100%;
@@ -14,6 +17,10 @@
     z-index: 1;
     font-weight: 700;
     font-size: .85rem;
+}
+
+.content-header-text {
+    min-width: 0;
 }
 
 .content-header::after {
@@ -271,6 +278,7 @@
 
     .content-header {
         top: 1.25rem;
+        justify-content: center;
         text-align: center;
     }
 
