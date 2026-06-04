@@ -1,6 +1,7 @@
 import * as marked from 'marked';
 import './content.css';
 import * as types from "./types";
+import * as url from './url';
 
 // === Content Data Loading ===
 export const about = loadContent(import.meta.glob(`../content/about.json`, {eager: true}));
@@ -9,6 +10,7 @@ export const work = loadContent(import.meta.glob(`../content/work/*.json`, {eage
 
 // === Component State ===
 let currentContent: types.Story[] = [];
+let currentSection: url.ContentSection = 'about';
 let currentHeader: HTMLDivElement;
 let currentStories: HTMLDivElement;
 let modalOverlay: HTMLDivElement;
@@ -54,15 +56,27 @@ function handleContentClick(e: MouseEvent) {
 
     e.preventDefault();
     const target = a.getAttribute('href')!.substring(1);
-    changeContent(work, target);
+    const workStory = url.findStoryByTarget(work, target);
+    if (workStory) {
+        history.pushState({}, '', url.getSectionPath('work', workStory));
+        changeContent(work, url.getStorySlug(workStory), 'work');
+        return;
+    }
+
+    const serviceStory = url.findStoryByTarget(services, target);
+    if (serviceStory) {
+        history.pushState({}, '', url.getSectionPath('services', serviceStory));
+        changeContent(services, url.getStorySlug(serviceStory), 'services');
+    }
 }
 
 /**
  * Switch to a different content section and optionally scroll to a specific story
  */
-export function changeContent(stories: types.Story[], targetId?: string) {
+export function changeContent(stories: types.Story[], targetId?: string, section: url.ContentSection = 'about') {
     // Update state and render content
     currentContent = stories;
+    currentSection = section;
     currentHeader.textContent = stories[0]?.title ?? '';
     currentStories.innerHTML = '';
     stories.forEach(story => currentStories.appendChild(renderStory(story)));
@@ -91,7 +105,10 @@ export function scrollToTop() {
  */
 function scrollToStory(targetId: string) {
     requestAnimationFrame(() => {
-        const story = currentStories.querySelector<HTMLElement>(`.story[data-id="${targetId}"]`);
+        const targetSlug = url.slugify(targetId);
+        const story = Array
+            .from(currentStories.querySelectorAll<HTMLElement>('.story'))
+            .find(element => element.dataset.slug === targetSlug || url.slugify(element.dataset.id ?? '') === targetSlug);
         if (!story) return;
 
         const titleEl = story.querySelector<HTMLElement>('.story-title')!;
@@ -186,7 +203,7 @@ function updateHeader() {
 
     for (const element of currentStories.querySelectorAll<HTMLElement>('.story')) {
         if (element.offsetTop > position) break;
-        const title = element.querySelector<HTMLElement>('.story-title')?.textContent;
+        const title = element.querySelector<HTMLElement>('.story-title-text')?.textContent;
         if (title) current = title;
     }
 
@@ -239,13 +256,23 @@ function renderStory(record: types.Story): HTMLElement {
         throw new Error('Missing title in content record');
     }
 
+    const storySlug = url.getStorySlug(record);
     story.dataset.id = record.title;
-    story.id = record.title;
+    story.dataset.slug = storySlug;
+    story.id = storySlug;
 
     // Create story title element
     const storyTitle = document.createElement('div');
     storyTitle.className = 'story-title';
-    storyTitle.textContent = record.title;
+    const storyTitleText = document.createElement('span');
+    storyTitleText.className = 'story-title-text';
+    storyTitleText.textContent = record.title;
+    storyTitle.appendChild(storyTitleText);
+
+    if (currentSection === 'work') {
+        storyTitle.appendChild(createCopyLinkButton(record));
+    }
+
     story.appendChild(storyTitle);
 
     // Create story container for content
@@ -274,6 +301,72 @@ function renderStory(record: types.Story): HTMLElement {
 
     story.appendChild(storyContainer);
     return story;
+}
+
+function createCopyLinkButton(record: types.Story): HTMLButtonElement {
+    const btn = document.createElement('button');
+    btn.className = 'story-link-button';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', `Copy link to ${record.title}`);
+    btn.innerHTML = '<i class="fa-solid fa-link"></i>';
+
+    btn.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        copyStoryLink(btn, url.getAbsoluteSectionUrl('work', record), `Copy link to ${record.title}`);
+    });
+
+    return btn;
+}
+
+async function copyStoryLink(btn: HTMLButtonElement, href: string, label: string): Promise<void> {
+    let copied = false;
+
+    if (navigator.clipboard?.writeText) {
+        try {
+            await navigator.clipboard.writeText(href);
+            copied = true;
+        } catch {
+            copied = false;
+        }
+    }
+
+    if (!copied) {
+        copied = copyTextFallback(href);
+    }
+
+    if (!copied) {
+        window.prompt('Copy this link:', href);
+        return;
+    }
+
+    btn.classList.add('copied');
+    btn.setAttribute('aria-label', 'Copied link');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+
+    window.setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.setAttribute('aria-label', label);
+        btn.innerHTML = '<i class="fa-solid fa-link"></i>';
+    }, 1400);
+}
+
+function copyTextFallback(value: string): boolean {
+    const textarea = document.createElement('textarea');
+    textarea.value = value;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+        return document.execCommand('copy');
+    } catch {
+        return false;
+    } finally {
+        document.body.removeChild(textarea);
+    }
 }
 
 /**

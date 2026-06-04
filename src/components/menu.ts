@@ -1,6 +1,8 @@
 import './menu.css';
 import * as content from './content';
+import * as routing from './routing';
 import * as types from './types';
+import * as url from './url';
 
 const mobileWidth = 50 * 16; // 50rem in pixels
 
@@ -172,7 +174,7 @@ function createMenuHeader(): HTMLDivElement {
             toggleMobileMenu();
         } else {
             // In desktop mode, keep original scroll-to-top behavior
-            content.scrollToTop();
+            routing.navigateTo('about');
         }
     });
 
@@ -293,13 +295,13 @@ function createMenuItem(text: string): HTMLDivElement {
 function handleMenuItemClick(menuText: string): void {
     switch (menuText) {
         case 'About':
-            content.changeContent(content.about);
+            routing.navigateTo('about');
             break;
         case 'Services':
-            content.changeContent(content.services);
+            routing.navigateTo('services');
             break;
         case 'Selected Work':
-            content.changeContent(content.work);
+            routing.navigateTo('work');
             break;
     }
 }
@@ -327,7 +329,7 @@ function createSubmenuItem(project: types.Story): HTMLDivElement {
     const subItem = document.createElement('div');
     subItem.className = 'sub-menu-item';
     subItem.textContent = project.title || '';
-    subItem.dataset.target = project.title || '';
+    subItem.dataset.target = url.getStorySlug(project);
 
     // Add click handler with proper event bubbling prevention
     subItem.addEventListener('click', event => {
@@ -342,7 +344,8 @@ function createSubmenuItem(project: types.Story): HTMLDivElement {
  * Navigate to a specific project by ID
  */
 function navigateToProject(projectId: string): void {
-    content.changeContent(content.work, projectId);
+    const project = url.findStoryByTarget(content.work, projectId);
+    routing.navigateTo('work', project);
 
     // Close mobile menu after navigation
     if (menuItems.classList.contains('open')) {

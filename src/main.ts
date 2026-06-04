@@ -14,3 +14,4 @@ columns.append(content);
 
 app?.appendChild(columns);
 
+components.routing.initialize();
