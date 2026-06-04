@@ -1,6 +1,6 @@
 {
   "title": "Computational Network Design",
-  "index": 3,
+  "index": 4,
   "date": "2016-07-11",
   "description": "Under the leadership of UCL Smart Geometry Lab Prof. Niloy Mitra and lead author Chi-Han Peng, this paper presents a computational method for generating network layouts—such as streets or floorplans—based solely on high-level functional specifications like density, travel time, and traffic type. Using an integer programming approach, the method guarantees valid networks that meet all constraints and perform well on defined objectives.",
   "blocks": [

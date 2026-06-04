@@ -1,0 +1,24 @@
+{
+  "title": "Wide Data Project",
+  "index": 3,
+  "date": "2018-01-09",
+  "description": "A geometric, geospatial, and relational database integrating ever more real estate data for New York City, NY.",
+  "blocks": [
+    {
+      "type": "image",
+      "value": "wdp01.jpg"
+    },
+    {
+      "type": "body",
+      "value": "With the MIT Real Estate Innovation Lab and contributions from public and private data providers, we created a wide data approach for linking design to innovation and in turn to financial performance in the built environment. It housed over 3,000 variables across 200 datasets and 20 data providers, allowing the lab to approach financial performance and economic growth questions from an interdisciplinary approach, where design and planning metrics carry just as much weight as financial and economic indicators."
+    },
+    {
+      "type": "image",
+      "value": "wdp02.png"
+    },
+    {
+      "type": "body",
+      "value": "The project was initiated and developed via Dr. Andrea Chegut's PhD dissertation on the financial performance of innovative real estate products. In the lab, it was extended into more robust software architecture that facilitated the Lab's projects and papers on NYC real estate. [The Wide Data Experiment](https://realestateinnovationlab.mit.edu/research-category/the-wide-data-experiment/)"
+    }
+  ]
+}
