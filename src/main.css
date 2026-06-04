@@ -43,13 +43,25 @@ body {
 @media (max-width: 50rem) {
     .columns {
         flex-direction: column;
+        gap: 1.5rem;
     }
 
     .columns > .menu-container {
         flex: 0;
     }
 
+    .columns > .content-container {
+        margin-top: 2.25rem;
+        transition: margin-top 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     .columns:has(.menu-container .menu-items.open) > .content-container {
-        margin-top: var(--menu-total-height);
+        margin-top: calc(3rem + var(--menu-open-height, 0px) + 0.75rem);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .columns > .content-container {
+            transition: none;
+        }
     }
 }

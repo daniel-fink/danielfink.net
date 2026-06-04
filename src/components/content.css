@@ -79,6 +79,13 @@
     opacity: 1;
 }
 
+.story-link-button:focus-visible,
+.popout-button:focus-visible,
+.back-to-top:focus-visible {
+    outline: 1px solid #000;
+    outline-offset: 0.2rem;
+}
+
 .story-title::after {
     content: "";
     position: absolute;
@@ -267,6 +274,7 @@
     visibility: hidden;
     transition: opacity 0.3s, visibility 0.3s;
     border: 0.5px solid #000;
+    font-family: inherit;
 }
 
 
@@ -277,14 +285,14 @@
     }
 
     .content-header {
-        top: 1.25rem;
+        top: 0.5rem;
         justify-content: center;
         text-align: center;
     }
 
     .content-items {
         width: 100%;
-        top: 1.25rem;
+        top: 0.5rem;
         padding: 0 0.5rem;
     }
 

@@ -14,21 +14,24 @@ const MENU_ITEMS = [
 ];
 
 // === Component State ===
-let menuContainer: HTMLDivElement;
+let menuContainer: HTMLElement;
 let menuItems: HTMLDivElement;
 let menuHeader: HTMLDivElement;
 
-let menuItemsHeight: number = 0; // Store calculated menu height
-let menuHeaderHeight: number = 0; // Store header height
-let lastScrollTop = 0;
+let menuTopLevelHeight: number = 0;
+let menuExpandedHeight: number = 0;
+let workSubmenuHeight: number = 0;
+let menuHeaderHeight: number = 0;
+let hamburgerButton: HTMLButtonElement;
 
 /**
  * Initialize the menu component
  */
-export function initialize(): HTMLDivElement {
+export function initialize(): HTMLElement {
     // Create container structure
-    menuContainer = document.createElement('div');
+    menuContainer = document.createElement('nav');
     menuContainer.className = 'menu-container';
+    menuContainer.setAttribute('aria-label', 'Primary navigation');
 
     // Create header with site title
     menuHeader = createMenuHeader();
@@ -36,18 +39,16 @@ export function initialize(): HTMLDivElement {
 
     // Create menu items
     menuItems = createMenuItems();
-    menuItemClickHandlers();
     menuContainer.appendChild(menuItems);
 
     // Add resize listener to handle responsive behavior
     window.addEventListener('resize', handleResize);
+    window.addEventListener('site-route-change', handleRouteChange as EventListener);
 
-    // Add scroll listener for content container - simplified approach
-    const contentContainer = document.querySelector('.content-items');
-    if (contentContainer) {
-        // Use standard scroll event instead of touch events
-        contentContainer.addEventListener('scroll', handleContentScroll);
-    }
+    requestAnimationFrame(() => {
+        const contentContainer = document.querySelector('.content-items');
+        contentContainer?.addEventListener('scroll', handleContentScroll);
+    });
 
     // Add document scroll listener for desktop testing in mobile mode
     document.addEventListener('wheel', handleDocumentWheel, {passive: true});
@@ -58,32 +59,26 @@ export function initialize(): HTMLDivElement {
     return menuContainer;
 }
 
+function handleRouteChange(event: CustomEvent<{ section: string; slug: string }>): void {
+    const {section, slug} = event.detail;
+
+    menuItems
+        .querySelectorAll<HTMLElement>('[aria-current]')
+        .forEach(element => element.removeAttribute('aria-current'));
+
+    const sectionButton = menuItems.querySelector<HTMLButtonElement>(`.menu-item-button[data-section="${section}"]`);
+    sectionButton?.setAttribute('aria-current', 'page');
+
+    if (section === 'work' && slug) {
+        const projectButton = menuItems.querySelector<HTMLButtonElement>(`.sub-menu-item[data-target="${slug}"]`);
+        projectButton?.setAttribute('aria-current', 'location');
+    }
+}
+
 function initializeMenuHeights(): void {
     requestAnimationFrame(() => {
-        // Force menu items to be measurable without affecting display
-        menuItems.style.position = 'absolute';
-        menuItems.style.visibility = 'hidden';
-        menuItems.style.maxHeight = 'none';
-        menuItems.classList.add('open');
-
-        // Measure and store heights
-        menuItemsHeight = menuItems.offsetHeight;
-        menuHeaderHeight = menuHeader.offsetHeight;
-
-        // Reset styles
-        menuItems.style.position = '';
-        menuItems.style.visibility = '';
-        menuItems.style.maxHeight = '';
-        menuItems.classList.remove('open');
-
-        // Set the CSS variable with our stored value
-        document.documentElement.style.setProperty('--menu-items-max-height', `${menuItemsHeight}px`);
-
-        // If starting in mobile mode, initialize properly
-        if (window.innerWidth <= mobileWidth) {
-            menuItems.classList.add('open');
-            updateMenuHeight();
-        }
+        measureMenuHeights();
+        updateMenuState(false);
     });
 }
 
@@ -91,26 +86,13 @@ function initializeMenuHeights(): void {
  * Handle window resize events
  */
 function handleResize(): void {
-    if (window.innerWidth <= mobileWidth) {
-        if (!menuItems.classList.contains('open')) {
-            menuItems.classList.add('open');
-            updateMenuHeight();
-        }
+    measureMenuHeights();
+
+    if (window.innerWidth > mobileWidth && menuItems.classList.contains('open')) {
+        updateMenuState(false);
     }
-}
 
-function menuItemClickHandlers(): void {
-    const menuItemElements = menuItems.querySelectorAll('.menu-item, .sub-menu-item');
-
-    menuItemElements.forEach(item => {
-        item.addEventListener('click', () => {
-            // Only collapse menu if in mobile mode
-            if (window.innerWidth <= mobileWidth) {
-                menuItems.classList.remove('open');
-                updateMenuHeight();
-            }
-        });
-    });
+    updateMenuHeight();
 }
 
 /**
@@ -121,8 +103,7 @@ function handleContentScroll(event: Event): void {
 
     // Immediately close menu on any scroll event in mobile view
     if (menuItems.classList.contains('open')) {
-        menuItems.classList.remove('open');
-        updateMenuHeight();
+        updateMenuState(false);
     }
 }
 
@@ -133,8 +114,7 @@ function handleDocumentWheel(event: WheelEvent): void {
     if (window.innerWidth > mobileWidth) return;
 
     if (event.deltaY > 0) {
-        menuItems.classList.remove('open');
-        updateMenuHeight();
+        updateMenuState(false);
     }
 }
 
@@ -144,14 +124,91 @@ function handleDocumentWheel(event: WheelEvent): void {
  */
 // Update the menu height function to also use stored values
 function updateMenuHeight(): void {
-    // Calculate total height based on stored values
-    const totalHeight = menuHeaderHeight +
-        (menuItems.classList.contains('open') ? menuItemsHeight : 0);
+    const activeMenuHeight = getActiveMenuHeight();
+    const totalHeight = menuHeaderHeight + activeMenuHeight;
 
+    document.documentElement.style.setProperty('--menu-open-height', `${activeMenuHeight}px`);
     document.documentElement.style.setProperty(
         '--menu-total-height',
         `${totalHeight}px`
     );
+}
+
+function updateMenuState(isOpen: boolean): void {
+    menuItems.classList.toggle('open', isOpen);
+    hamburgerButton?.setAttribute('aria-expanded', String(isOpen));
+
+    if (!isOpen) {
+        const selectedWorkItem = menuItems.querySelector('.menu-item.expanded');
+        selectedWorkItem?.classList.remove('expanded');
+        menuItems.classList.remove('work-expanded');
+        setSelectedWorkExpanded(false);
+    }
+
+    updateMenuHeight();
+}
+
+function getActiveMenuHeight(): number {
+    if (!menuItems.classList.contains('open')) return 0;
+    return menuItems.classList.contains('work-expanded')
+        ? menuExpandedHeight
+        : menuTopLevelHeight;
+}
+
+function measureMenuHeights(): void {
+    const selectedWorkItem = getSelectedWorkItem();
+    const selectedWorkButton = getSelectedWorkButton();
+    const subMenu = getWorkSubmenu();
+    const wasOpen = menuItems.classList.contains('open');
+    const wasExpanded = menuItems.classList.contains('work-expanded');
+    const originalSubMenuMaxHeight = subMenu?.style.maxHeight ?? '';
+    const originalSubMenuMarginTop = subMenu?.style.marginTop ?? '';
+    const originalSubMenuOpacity = subMenu?.style.opacity ?? '';
+    const originalSubMenuTransition = subMenu?.style.transition ?? '';
+
+    menuHeaderHeight = menuHeader.offsetHeight;
+
+    menuItems.style.position = 'absolute';
+    menuItems.style.visibility = 'hidden';
+    menuItems.style.maxHeight = 'none';
+    menuItems.style.transition = 'none';
+    menuItems.classList.add('open');
+    menuItems.classList.remove('work-expanded');
+    selectedWorkItem?.classList.remove('expanded');
+    selectedWorkButton?.setAttribute('aria-expanded', 'false');
+    if (subMenu) {
+        subMenu.style.maxHeight = '0px';
+        subMenu.style.marginTop = '0px';
+        subMenu.style.opacity = '0';
+        subMenu.style.transition = 'none';
+    }
+
+    menuTopLevelHeight = menuItems.offsetHeight;
+    workSubmenuHeight = subMenu?.scrollHeight ?? 0;
+    menuExpandedHeight = menuTopLevelHeight + workSubmenuHeight + getSubmenuExpandedGap();
+
+    menuItems.style.position = '';
+    menuItems.style.visibility = '';
+    menuItems.style.maxHeight = '';
+    menuItems.style.transition = '';
+    if (subMenu) {
+        subMenu.style.maxHeight = originalSubMenuMaxHeight;
+        subMenu.style.marginTop = originalSubMenuMarginTop;
+        subMenu.style.opacity = originalSubMenuOpacity;
+        subMenu.style.transition = originalSubMenuTransition;
+    }
+    menuItems.classList.toggle('open', wasOpen);
+    menuItems.classList.toggle('work-expanded', wasExpanded);
+    selectedWorkItem?.classList.toggle('expanded', wasExpanded);
+    selectedWorkButton?.setAttribute('aria-expanded', String(wasExpanded));
+
+    document.documentElement.style.setProperty('--menu-top-level-height', `${menuTopLevelHeight}px`);
+    document.documentElement.style.setProperty('--menu-expanded-height', `${menuExpandedHeight}px`);
+    document.documentElement.style.setProperty('--work-submenu-height', `${workSubmenuHeight}px`);
+}
+
+function getSubmenuExpandedGap(): number {
+    return parseFloat(getComputedStyle(document.documentElement).fontSize) * 0.25;
 }
 
 /**
@@ -162,10 +219,10 @@ function createMenuHeader(): HTMLDivElement {
     header.className = 'menu-header';
 
     // Add site title
-    const headerText = document.createElement('div');
+    const headerText = document.createElement('button');
     headerText.className = 'menu-header-text';
+    headerText.type = 'button';
     headerText.textContent = 'Daniel Fink';
-    headerText.style.cursor = 'pointer'; // Make it look clickable
 
     // Add click handler that checks for mobile/desktop
     headerText.addEventListener('click', () => {
@@ -190,13 +247,24 @@ function createMenuHeader(): HTMLDivElement {
 /**
  * Create hamburger toggle button for mobile view
  */
-function createHamburgerToggle(): HTMLDivElement {
-    const hamburger = document.createElement('div');
+function createHamburgerToggle(): HTMLButtonElement {
+    const hamburger = document.createElement('button');
     hamburger.className = 'hamburger';
-    hamburger.textContent = '☰';
+    hamburger.type = 'button';
+    hamburger.setAttribute('aria-label', 'Toggle navigation');
+    hamburger.setAttribute('aria-expanded', 'false');
+
+    const icon = document.createElement('span');
+    icon.className = 'hamburger-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < 3; i++) {
+        icon.appendChild(document.createElement('span'));
+    }
+    hamburger.appendChild(icon);
 
     hamburger.addEventListener('click', toggleMobileMenu);
-
+    hamburger.addEventListener('pointerup', () => hamburger.blur());
+    hamburgerButton = hamburger;
     return hamburger;
 }
 
@@ -206,51 +274,12 @@ function createHamburgerToggle(): HTMLDivElement {
 function toggleMobileMenu(): void {
     const isOpening = !menuItems.classList.contains('open');
 
-    // Set the CSS variable using stored height (no recalculation needed)
-    document.documentElement.style.setProperty('--menu-items-max-height', `${menuItemsHeight}px`);
-
     if (isOpening) {
-        menuItems.classList.add('open');
-
-        // Automatically expand the Selected Work submenu
-        const selectedWorkItem = menuItems.querySelector('.menu-item:has(.sub-menu)');
-        if (selectedWorkItem) {
-            selectedWorkItem.classList.add('expanded');
-        }
-
-        // Recalculate menu height to include submenu
-        requestAnimationFrame(recalculateMenuHeight);
+        measureMenuHeights();
+        updateMenuState(true);
     } else {
-        menuItems.classList.remove('open');
-
-        // Collapse Selected Work submenu when closing menu
-        const selectedWorkItem = menuItems.querySelector('.menu-item.expanded');
-        if (selectedWorkItem) {
-            selectedWorkItem.classList.remove('expanded');
-        }
+        updateMenuState(false);
     }
-
-    // Update content position with a slight delay to ensure browser applies changes
-    setTimeout(updateMenuHeight, 10);
-}
-
-/**
- * Recalculate the total menu height including expanded submenus
- */
-function recalculateMenuHeight(): void {
-    // Force menu items to be measurable
-    const originalMaxHeight = menuItems.style.maxHeight;
-    menuItems.style.maxHeight = 'none';
-
-    // Get the actual height including expanded submenus
-    menuItemsHeight = menuItems.offsetHeight;
-
-    // Restore original max-height
-    menuItems.style.maxHeight = originalMaxHeight;
-
-    // Update CSS variable
-    document.documentElement.style.setProperty('--menu-items-max-height', `${menuItemsHeight}px`);
-    updateMenuHeight();
 }
 
 /**
@@ -275,10 +304,28 @@ function createMenuItems(): HTMLDivElement {
 function createMenuItem(text: string): HTMLDivElement {
     const item = document.createElement('div');
     item.className = 'menu-item';
-    item.textContent = text;
 
-    // Add click handler for content switching
-    item.addEventListener('click', () => handleMenuItemClick(text));
+    const button = document.createElement('button');
+    button.className = 'menu-item-button';
+    button.type = 'button';
+    button.dataset.section = getSectionKey(text);
+    button.addEventListener('click', () => handleMenuItemClick(text));
+
+    const label = document.createElement('span');
+    label.textContent = text;
+    button.appendChild(label);
+
+    if (text === 'Selected Work') {
+        const indicator = document.createElement('span');
+        indicator.className = 'menu-disclosure';
+        indicator.setAttribute('aria-hidden', 'true');
+        indicator.textContent = '+';
+        button.setAttribute('aria-expanded', 'false');
+        button.setAttribute('aria-controls', 'selected-work-submenu');
+        button.appendChild(indicator);
+    }
+
+    item.appendChild(button);
 
     // Add submenu for "Selected Work" section
     if (text === 'Selected Work') {
@@ -289,6 +336,17 @@ function createMenuItem(text: string): HTMLDivElement {
     return item;
 }
 
+function getSectionKey(text: string): url.ContentSection {
+    switch (text) {
+        case 'Services':
+            return 'services';
+        case 'Selected Work':
+            return 'work';
+        default:
+            return 'about';
+    }
+}
+
 /**
  * Handle click on main menu item
  */
@@ -296,12 +354,18 @@ function handleMenuItemClick(menuText: string): void {
     switch (menuText) {
         case 'About':
             routing.navigateTo('about');
+            closeMobileMenuAfterNavigation();
             break;
         case 'Services':
             routing.navigateTo('services');
+            closeMobileMenuAfterNavigation();
             break;
         case 'Selected Work':
-            routing.navigateTo('work');
+            if (window.innerWidth <= mobileWidth) {
+                toggleSelectedWork();
+            } else {
+                routing.navigateTo('work');
+            }
             break;
     }
 }
@@ -312,6 +376,7 @@ function handleMenuItemClick(menuText: string): void {
 function createSubmenu(): HTMLDivElement {
     const subMenu = document.createElement('div');
     subMenu.className = 'sub-menu';
+    subMenu.id = 'selected-work-submenu';
 
     // Add each work item as submenu entry
     content.work.forEach(record => {
@@ -325,9 +390,10 @@ function createSubmenu(): HTMLDivElement {
 /**
  * Create a single submenu item for a work project
  */
-function createSubmenuItem(project: types.Story): HTMLDivElement {
-    const subItem = document.createElement('div');
+function createSubmenuItem(project: types.Story): HTMLButtonElement {
+    const subItem = document.createElement('button');
     subItem.className = 'sub-menu-item';
+    subItem.type = 'button';
     subItem.textContent = project.title || '';
     subItem.dataset.target = url.getStorySlug(project);
 
@@ -345,10 +411,42 @@ function createSubmenuItem(project: types.Story): HTMLDivElement {
  */
 function navigateToProject(projectId: string): void {
     const project = url.findStoryByTarget(content.work, projectId);
-    routing.navigateTo('work', project);
 
-    // Close mobile menu after navigation
-    if (menuItems.classList.contains('open')) {
-        menuItems.classList.remove('open');
+    closeMobileMenuAfterNavigation();
+
+    requestAnimationFrame(() => routing.navigateTo('work', project));
+}
+
+function toggleSelectedWork(): void {
+    const isExpanded = !menuItems.classList.contains('work-expanded');
+    const selectedWorkItem = getSelectedWorkItem();
+
+    measureMenuHeights();
+    menuItems.classList.toggle('work-expanded', isExpanded);
+    selectedWorkItem?.classList.toggle('expanded', isExpanded);
+    setSelectedWorkExpanded(isExpanded);
+    updateMenuHeight();
+}
+
+function closeMobileMenuAfterNavigation(): void {
+    if (window.innerWidth <= mobileWidth && menuItems.classList.contains('open')) {
+        updateMenuState(false);
     }
+}
+
+function setSelectedWorkExpanded(isExpanded: boolean): void {
+    const selectedWorkButton = getSelectedWorkButton();
+    selectedWorkButton?.setAttribute('aria-expanded', String(isExpanded));
+}
+
+function getSelectedWorkItem(): HTMLDivElement | null {
+    return menuItems.querySelector('.menu-item:has(.sub-menu)');
+}
+
+function getSelectedWorkButton(): HTMLButtonElement | null {
+    return menuItems.querySelector('.menu-item-button[data-section="work"]');
+}
+
+function getWorkSubmenu(): HTMLDivElement | null {
+    return menuItems.querySelector('.sub-menu');
 }

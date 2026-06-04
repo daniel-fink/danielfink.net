@@ -16,6 +16,8 @@ let currentHeaderTarget = '';
 let currentStories: HTMLDivElement;
 let modalOverlay: HTMLDivElement;
 let modalContent: HTMLDivElement;
+let pendingAlignmentToken = 0;
+let activeScrollFrame: number | undefined;
 
 /**
  * Initialize the content component
@@ -60,33 +62,58 @@ function handleContentClick(e: MouseEvent) {
     const workStory = url.findStoryByTarget(work, target);
     if (workStory) {
         history.pushState({}, '', url.getSectionPath('work', workStory));
-        changeContent(work, url.getStorySlug(workStory), 'work');
+        changeContent(work, url.getStorySlug(workStory), 'work', 'smooth');
         return;
     }
 
     const serviceStory = url.findStoryByTarget(services, target);
     if (serviceStory) {
         history.pushState({}, '', url.getSectionPath('services', serviceStory));
-        changeContent(services, url.getStorySlug(serviceStory), 'services');
+        changeContent(services, url.getStorySlug(serviceStory), 'services', 'smooth');
     }
 }
 
 /**
  * Switch to a different content section and optionally scroll to a specific story
  */
-export function changeContent(stories: types.Story[], targetId?: string, section: url.ContentSection = 'about') {
+export function changeContent(
+    stories: types.Story[],
+    targetId?: string,
+    section: url.ContentSection = 'about',
+    behavior: ScrollBehavior = 'auto'
+) {
+    const isSameContent = currentContent === stories &&
+        currentSection === section &&
+        currentStories.childElementCount > 0;
+
+    if (isSameContent) {
+        pendingAlignmentToken++;
+
+        if (targetId) {
+            alignToStory(targetId, behavior);
+        } else {
+            currentStories.scrollTo({top: 0, behavior});
+            setContentHeader(stories[0]);
+        }
+
+        return;
+    }
+
     // Update state and render content
+    pendingAlignmentToken++;
     currentContent = stories;
     currentSection = section;
     currentHeaderTarget = '';
     setContentHeader(stories[0]);
     currentStories.innerHTML = '';
     stories.forEach(story => currentStories.appendChild(renderStory(story)));
-    updateHeader();
 
     // If a specific story is targeted, scroll to it
     if (targetId) {
-        scrollToStory(targetId);
+        alignToStory(targetId, behavior);
+    } else {
+        currentStories.scrollTo({top: 0, behavior});
+        updateHeader();
     }
 }
 
@@ -102,105 +129,91 @@ export function scrollToTop() {
     }
 }
 
-/**
- * Scroll to a specific story by ID with precise positioning
- */
-function scrollToStory(targetId: string) {
-    requestAnimationFrame(() => {
-        const targetSlug = url.slugify(targetId);
-        const story = Array
-            .from(currentStories.querySelectorAll<HTMLElement>('.story'))
-            .find(element => element.dataset.slug === targetSlug || url.slugify(element.dataset.id ?? '') === targetSlug);
+function alignToStory(targetId: string, behavior: ScrollBehavior) {
+    const token = ++pendingAlignmentToken;
+    const targetSlug = url.slugify(targetId);
+
+    const align = (scrollBehavior: ScrollBehavior = 'auto') => {
+        if (token !== pendingAlignmentToken) return;
+
+        const story = findRenderedStory(targetSlug);
         if (!story) return;
 
-        const titleEl = story.querySelector<HTMLElement>('.story-title')!;
-
-        // Ensure all media is loaded before calculating positions
-        const mediaElements = Array.from(story.querySelectorAll('img, video')) as (HTMLImageElement | HTMLVideoElement)[];
-        const loadPromises = getMediaLoadPromises(mediaElements);
-
-        alignStoryToHeader(titleEl, loadPromises);
-    });
-}
-
-/**
- * Get promises that resolve when all media elements are loaded
- */
-function getMediaLoadPromises(elements: (HTMLImageElement | HTMLVideoElement)[]) {
-    return elements.map(el => new Promise<void>(resolve => {
-        if ((el instanceof HTMLImageElement && el.complete) ||
-            (el instanceof HTMLVideoElement && el.readyState >= 1)) {
-            resolve();
+        if (scrollBehavior === 'smooth') {
+            animateScrollToStory(targetSlug, token);
         } else {
-            const event = el instanceof HTMLImageElement ? 'load' : 'loadedmetadata';
-            el.addEventListener(event, () => resolve(), {once: true});
-        }
-    }));
-}
-
-/**
- * Align story title with content header with precise positioning
- */
-function alignStoryToHeader(titleEl: HTMLElement, loadPromises: Promise<void>[]) {
-    Promise.all(loadPromises).then(() => {
-        // Reset scroll position
-        currentStories.scrollTop = 0;
-
-        // Triple RAF for maximum browser compatibility
-        requestAnimationFrame(() => {
-            // Force layout recalculation
-            void currentStories.offsetHeight;
-
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    // Get measurements after layout is stable
-                    const headerTop = currentHeader.getBoundingClientRect().top;
-                    const containerTop = currentStories.getBoundingClientRect().top;
-                    const titleTop = titleEl.getBoundingClientRect().top;
-
-                    // Calculate precise scroll position
-                    const titleRelativeToContainer = titleTop - containerTop;
-                    const headerRelativeToContainer = headerTop - containerTop;
-                    const scrollAmount = titleRelativeToContainer - headerRelativeToContainer;
-
-                    // Perform scroll
-                    currentStories.scrollTo({
-                        top: scrollAmount,
-                        behavior: 'smooth'
-                    });
-
-                    // Verify scroll position after animation completes
-                    verifyScrollPosition(titleEl);
-                });
+            currentStories.scrollTo({
+                top: story.offsetTop,
+                behavior: 'auto',
             });
+        }
+        setContentHeader(url.findStoryByTarget(currentContent, targetSlug));
+    };
+
+    requestAnimationFrame(() => align(behavior));
+
+    const realignmentDelays = behavior === 'smooth' ? [900, 1400] : [120, 350, 800, 1600];
+    realignmentDelays.forEach(delay => window.setTimeout(() => align('auto'), delay));
+
+    currentStories
+        .querySelectorAll<HTMLImageElement | HTMLVideoElement>('img, video')
+        .forEach(element => {
+            const event = element instanceof HTMLImageElement ? 'load' : 'loadedmetadata';
+            element.addEventListener(event, () => align('auto'), {once: true});
         });
-    });
 }
 
-/**
- * Verify and adjust final scroll position if needed
- */
-function verifyScrollPosition(titleEl: HTMLElement) {
-    setTimeout(() => {
-        const titleTop = titleEl.getBoundingClientRect().top;
-        const headerTop = currentHeader.getBoundingClientRect().top;
+function animateScrollToStory(targetSlug: string, token: number): void {
+    if (activeScrollFrame !== undefined) {
+        cancelAnimationFrame(activeScrollFrame);
+    }
 
-        // Adjust if position is off by more than 2px
-        if (Math.abs(titleTop - headerTop) > 2) {
-            const correction = titleTop - headerTop;
-            currentStories.scrollBy({
-                top: correction,
-                behavior: 'auto'
-            });
+    const startTop = currentStories.scrollTop;
+    const initialTarget = findRenderedStory(targetSlug)?.offsetTop ?? startTop;
+    const distance = Math.abs(initialTarget - startTop);
+    const duration = Math.min(900, Math.max(420, 320 + distance * 0.045));
+    const startTime = performance.now();
+
+    const tick = (now: number) => {
+        if (token !== pendingAlignmentToken) return;
+
+        const story = findRenderedStory(targetSlug);
+        if (!story) return;
+
+        const progress = Math.min(1, (now - startTime) / duration);
+        const eased = easeInOutCubic(progress);
+        const targetTop = story.offsetTop;
+
+        currentStories.scrollTop = startTop + (targetTop - startTop) * eased;
+
+        if (progress < 1) {
+            activeScrollFrame = requestAnimationFrame(tick);
+        } else {
+            currentStories.scrollTop = targetTop;
+            activeScrollFrame = undefined;
         }
-    }, 1000);
+    };
+
+    activeScrollFrame = requestAnimationFrame(tick);
+}
+
+function easeInOutCubic(progress: number): number {
+    return progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+}
+
+function findRenderedStory(targetSlug: string): HTMLElement | undefined {
+    return Array
+        .from(currentStories.querySelectorAll<HTMLElement>('.story'))
+        .find(element => element.dataset.slug === targetSlug || url.slugify(element.dataset.id ?? '') === targetSlug);
 }
 
 /**
  * Update header text based on scroll position
  */
 function updateHeader() {
-    const position = currentStories.scrollTop + currentHeader.offsetHeight;
+    const position = currentStories.scrollTop + 1;
     let current = currentContent[0];
 
     for (const element of currentStories.querySelectorAll<HTMLElement>('.story')) {
@@ -323,16 +336,19 @@ function renderStory(record: types.Story): HTMLElement {
 }
 
 function createCopyLinkButton(record: types.Story): HTMLButtonElement {
+    const href = url.getAbsoluteSectionUrl('work', record);
     const btn = document.createElement('button');
     btn.className = 'story-link-button';
     btn.type = 'button';
     btn.setAttribute('aria-label', `Copy link to ${record.title}`);
+    btn.dataset.copyUrl = href;
+    btn.title = href;
     btn.innerHTML = '<i class="fa-solid fa-link"></i>';
 
     btn.addEventListener('click', event => {
         event.preventDefault();
         event.stopPropagation();
-        copyStoryLink(btn, url.getAbsoluteSectionUrl('work', record), `Copy link to ${record.title}`);
+        copyStoryLink(btn, href, `Copy link to ${record.title}`);
     });
 
     return btn;
@@ -408,7 +424,7 @@ function renderBlock(item: types.Block): HTMLElement {
             return createBodyBlock(item.value);
 
         case 'image':
-            return createImageBlock(item.value, {popout: (item as any).popout});
+            return createImageBlock(item.value, {alt: item.alt, popout: item.popout});
 
         case 'video':
             return createVideoBlock(item.value);
@@ -437,12 +453,14 @@ function createBodyBlock(value: string): HTMLElement {
 /**
  * Create an image block with optional popout functionality
  */
-function createImageBlock(value: string, options?: { popout?: boolean }): HTMLElement {
+function createImageBlock(value: string, options?: { alt?: string; popout?: boolean }): HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.className = 'video-wrapper';
 
     const img = new Image();
     img.src = new URL(`../content/media/${value}`, import.meta.url).href;
+    img.alt = options?.alt ?? '';
+    img.decoding = 'async';
     img.style.display = 'block';
     wrapper.appendChild(img);
 
@@ -533,6 +551,8 @@ function createSubtitleBlock(value: string): HTMLElement {
 function createPopoutButton(onClick: () => void): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.className = 'popout-button';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Open media preview');
     btn.innerHTML = '<i class="fa-solid fa-up-right-from-square"></i>';
     btn.addEventListener('click', onClick);
     return btn;
@@ -542,8 +562,10 @@ function createPopoutButton(onClick: () => void): HTMLButtonElement {
  * Create and manage the "back to top" button
  */
 function createBackToTopButton(): void {
-    const backToTopBtn = document.createElement('div');
+    const backToTopBtn = document.createElement('button');
     backToTopBtn.className = 'back-to-top';
+    backToTopBtn.type = 'button';
+    backToTopBtn.setAttribute('aria-label', 'Back to top');
     backToTopBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
 
     // Add to DOM

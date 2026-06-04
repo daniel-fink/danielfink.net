@@ -21,12 +21,12 @@ export function findStoryByTarget(stories: types.Story[], target: string): types
 }
 
 export function getSectionPath(section: ContentSection, story?: types.Story): string {
-    if (section === 'about') return '/about';
+    if (section === 'about') return '/about/';
 
     const sectionPath = `/${section}`;
-    if (!story) return sectionPath;
+    if (!story) return `${sectionPath}/`;
 
-    return `${sectionPath}/${getStorySlug(story)}`;
+    return `${sectionPath}/${getStorySlug(story)}/`;
 }
 
 export function getAbsoluteSectionUrl(section: ContentSection, story?: types.Story): string {

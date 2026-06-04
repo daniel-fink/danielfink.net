@@ -14,29 +14,36 @@ export function initialize(): void {
 
 export function navigateTo(section: url.ContentSection, story?: types.Story): void {
     history.pushState({}, '', url.getSectionPath(section, story));
-    applyRoute({section, story});
+    applyRoute({section, story}, 'smooth');
 }
 
 function applyCurrentRoute(): void {
     const route = resolveCurrentRoute();
-    applyRoute(route);
-    canonicalizeHashRoute(route);
+    applyRoute(route, 'auto');
+    canonicalizeRoute(route);
 }
 
-function applyRoute(route: RouteState): void {
+function applyRoute(route: RouteState, behavior: ScrollBehavior): void {
     const target = route.story ? url.getStorySlug(route.story) : undefined;
 
     switch (route.section) {
         case 'about':
-            content.changeContent(content.about, target, 'about');
+            content.changeContent(content.about, target, 'about', behavior);
             break;
         case 'services':
-            content.changeContent(content.services, target, 'services');
+            content.changeContent(content.services, target, 'services', behavior);
             break;
         case 'work':
-            content.changeContent(content.work, target, 'work');
+            content.changeContent(content.work, target, 'work', behavior);
             break;
     }
+
+    window.dispatchEvent(new CustomEvent('site-route-change', {
+        detail: {
+            section: route.section,
+            slug: route.story ? url.getStorySlug(route.story) : '',
+        },
+    }));
 }
 
 function resolveCurrentRoute(): RouteState {
@@ -80,8 +87,11 @@ function resolveHashRoute(): RouteState | undefined {
     return undefined;
 }
 
-function canonicalizeHashRoute(route: RouteState): void {
-    if (!window.location.hash) return;
+function canonicalizeRoute(route: RouteState): void {
+    const canonicalPath = url.getSectionPath(route.section, route.story);
+    const currentPath = window.location.pathname;
 
-    history.replaceState({}, '', url.getSectionPath(route.section, route.story));
+    if (window.location.hash || currentPath !== canonicalPath) {
+        history.replaceState({}, '', canonicalPath);
+    }
 }
